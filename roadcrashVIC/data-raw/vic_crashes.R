@@ -1,6 +1,6 @@
 ## code to prepare `vic_crashes` dataset goes here
 
-raw_path <- "data-raw/victorian_road_crash_data.csv"
+raw_path <- "data-raw/raw/victorian_road_crash_data.csv"
 
 if (!file.exists(raw_path)) {
   url <- paste0(

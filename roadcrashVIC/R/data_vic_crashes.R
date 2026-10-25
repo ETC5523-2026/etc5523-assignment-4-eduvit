@@ -54,11 +54,13 @@
 #'   \item{divided}{(character) DIVIDED is a character field indicating divided portion of road.}
 #'   \item{stat_div_name}{(character) STAT DIV NAME is a character field indicates statistical division name for the location of the crash.}
 #' }
+#' 
 #' @source Victorian Government (Department of Transport and Planning),
 #'   *Victorian road crash data*,
-#'   <https://opendata.transport.vic.gov.au/>, licensed under
+#'   <https://discover.data.vic.gov.au/dataset/victoria-road-crash-data>,
+#'   licensed under
 #'   [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
-#'   Data last updated 13 October 2026; retrieved 25 ottobre 2026.
+#'   Data last updated 13 October 2026; retrieved 25 October 2026.
 #'
 #'   **Changes made:** column names were cleaned; `year`, `month`, `hour` and `road_full_name` were added; text categories were
 #'   converted to factors; placeholder values such as `Unk.` and `Not known` were set to `NA`; and the columns `ACCIDENT_TIME`,
