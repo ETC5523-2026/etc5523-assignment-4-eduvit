@@ -1,9 +1,11 @@
 Package: roadcrashVIC
-Title: What the Package Does (One Line, Title Case)
+Title: Explore Victorian Road Crashes
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+    person("Eduardo", "Vitale", , "eduardo.vitale@studio.unibo.it", role = c("aut", "cre"))
+Description: Provides cleaned Victorian road crash data (casualty crashes, 2012 to February 2026) from the
+    Victorian Government open data portal (CC BY 4.0 License), helper functions to filter and summarise crashes by time, 
+    place and conditions, and a Shiny dashboard for exploring when and where crashes happen and how severe they are.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -11,3 +13,5 @@ RoxygenNote: 8.0.0
 Depends: 
     R (>= 3.5)
 LazyData: true
+URL: https://github.com/ETC5523-2026/etc5523-assignment-4-eduvit
+BugReports: https://github.com/ETC5523-2026/etc5523-assignment-4-eduvit/issues
