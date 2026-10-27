@@ -5,26 +5,25 @@
 \alias{vic_population}
 \title{Estimated resident population of Victorian local government areas}
 \format{
-A tibble with 1134 rows and 4 columns:
+A tibble with 1,120 rows and 4 columns:
 \describe{
-\item{lga_code}{(character) ABS LGA code. Victorian codes start with 2.}
-\item{lga_name}{(character) LGA name.}
-\item{year}{(integer) Reference year (population at 30 June).}
-\item{population}{(numeric) Estimated resident population, in persons.}
+\item{lga_code}{(character) ABS LGA code.}
+\item{lga_name}{(character) LGA name in capitals, spelled as in \link{vic_lga} and \link{vic_crashes}.}
+\item{year}{(integer) Year (population at 30 June).}
+\item{population}{(numeric) Estimated resident population.}
 }
 }
 \source{
 Australian Bureau of Statistics, \emph{Regional population, 2024-25}
 (Cat. no. 3218.0), dataset ERP_LGA2025, \url{https://www.abs.gov.au/statistics/people/population/regional-population/2024-25},
 licensed under \href{https://creativecommons.org/licenses/by/4.0/}{CC BY 4.0}.
-Retrieved 25 October 2026. \strong{Changes made:} filtered to Victoria and to 2012
-onwards; columns renamed.
+Retrieved 25 October 2026. \strong{Changes made:} kept Victorian LGAs for 2012 to 2025; renamed columns; LGA names
+in capitals without the "(Vic.)" suffix.
 }
 \usage{
 vic_population
 }
 \description{
-Estimated resident population (ERP) of each Victorian local government area (LGA) as at 30 June each year, from 2012 to 2025,
-on 2025 LGA boundaries. It is included so crashes can be compared with the number of people living in each area.
+Estimated resident population of each Victorian local government area (LGA) at 30 June, 2012 to 2025.
 }
 \keyword{datasets}

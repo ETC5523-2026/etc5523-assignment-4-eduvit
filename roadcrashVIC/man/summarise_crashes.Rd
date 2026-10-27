@@ -7,33 +7,29 @@
 summarise_crashes(data, by)
 }
 \arguments{
-\item{data}{A data frame of crashes, such as \link{vic_crashes}, optionally already filtered with \code{\link[=filter_crashes]{filter_crashes()}}.}
+\item{data}{A data frame of crashes, such as \link{vic_crashes}, optionally filtered with \code{\link[=filter_crashes]{filter_crashes()}}.}
 
-\item{by}{Character vector of column names to group by, for example \code{"hour"}, \code{"year"} or \code{c("day_of_week", "hour")}.}
+\item{by}{Character vector of columns to group by, for example \code{"hour"} or \code{c("day_of_week", "hour")}.}
 }
 \value{
-A tibble with one row per group (only groups that occur in \code{data}), sorted by the grouping columns, with columns:
+A tibble with one row per group, sorted by the grouping columns, with columns:
 \describe{
 \item{\code{crashes}}{Number of crashes.}
 \item{\code{fatalities}}{People killed.}
 \item{\code{serious_injuries}}{People seriously injured.}
 \item{\code{other_injuries}}{People with other injuries.}
 \item{\code{fatalities_per_1000_crashes}}{People killed per 1,000 crashes.}
+\item{\code{serious_injuries_per_1000_crashes}}{People seriously injured per 1,000 crashes.}
+\item{\code{other_injuries_per_1000_crashes}}{People with other injuries per 1,000 crashes.}
 }
 }
 \description{
-Counts crashes and adds up people killed and injured for each group, and works out how deadly the crashes in each group were.
-}
-\details{
-The \code{fatalities_per_1000_crashes} column is a \emph{severity} measure: out of every 1,000 casualty crashes in the group,
-how many people died. It is different from a count of deaths, because a group with many crashes (such as
-the afternoon peak) can have a low rate. It is based on crashes, not on
-traffic volume, so it does not measure risk per kilometre driven.
+Counts crashes and people killed and injured in each group, and the number of casualties per 1,000 crashes.
 }
 \examples{
 summarise_crashes(vic_crashes, by = "hour")
 
 vic_crashes |>
-  filter_crashes(years = 2022:2024) |>
+  filter_crashes(start_date = "2022-01-01", end_date = "2024-12-31") |>
   summarise_crashes(by = c("day_of_week", "hour"))
 }

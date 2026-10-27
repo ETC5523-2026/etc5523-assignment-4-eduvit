@@ -2,37 +2,32 @@
 % Please edit documentation in R/filter_crashes.R
 \name{filter_crashes}
 \alias{filter_crashes}
-\title{Filter crashes by year and month}
+\title{Filter crashes to a date range}
 \usage{
-filter_crashes(data, years = NULL, months = NULL)
+filter_crashes(
+  data,
+  start_date = min(data$accident_date),
+  end_date = max(data$accident_date)
+)
 }
 \arguments{
-\item{data}{A data frame of crashes with \code{year} and \code{month} columns, such as \link{vic_crashes}.}
+\item{data}{A data frame of crashes with an \code{accident_date} column, such as \link{vic_crashes}.}
 
-\item{years}{Numeric vector of years to keep, for example \code{2019:2023}. Years that are not in
-the data are ignored (the data covers 2012 to February 2026).}
-
-\item{months}{Character vector of month abbreviations to keep, using the values of \link{month.abb}:
-\code{"Jan"}, \code{"Feb"}, \code{"Mar"}, \code{"Apr"}, \code{"May"}, \code{"Jun"}, \code{"Jul"}, \code{"Aug"}, \code{"Sep"}, \code{"Oct"}, \code{"Nov"}, \code{"Dec"}.
-Any other value is an error that lists the valid choices.}
+\item{start_date, end_date}{First and last day to keep, as dates or \code{"YYYY-MM-DD"} strings.
+Default to the first and last date in \code{data}.}
 }
 \value{
-The rows of \code{data} that match, with the same columns. This can be a data frame with zero rows
-if nothing matches, for example March 2026, because the data stops at the end of February 2026.
+The rows of \code{data} between \code{start_date} and \code{end_date}, with the same columns.
 }
 \description{
-Filter the dataset to keep only the crashes that happened in the chosen years and months.
-Leave an argument as \code{NULL} to keep everything for that dimension.
+Keep only the crashes that happened between two dates (both included).
 }
 \examples{
-# Summer crashes between 2019 and 2023
-summer <- filter_crashes(vic_crashes, years = 2019:2023, months=c("Dec", "Jan", "Feb"))
-nrow(summer)
+# Crashes in the 2024-25 financial year
+fy <- filter_crashes(vic_crashes, start_date = "2024-07-01", end_date = "2025-06-30")
+nrow(fy)
 
-# Years only: all months are kept
-nrow(filter_crashes(vic_crashes, years = 2024))
-
-# Nothing matches, so zero rows come back (not an error)
-nrow(filter_crashes(vic_crashes, years = 2026, months = "Mar"))
+# Only a start date: everything from 2020 onwards
+nrow(filter_crashes(vic_crashes, start_date = "2020-01-01"))
 
 }

@@ -5,12 +5,12 @@
 \alias{vic_lga}
 \title{Victorian local government area boundaries}
 \format{
-An \code{sf} object (a tibble with a geometry column) with 87 rows and 3 columns:
+An \code{sf} object (a tibble with a geometry column) with 80 rows and 4 columns:
 \describe{
-\item{lga_code}{(character) ABS LGA code. The eight unincorporated areas all share the code
-\code{29399}, so they cannot be given separate population figures.}
-\item{lga_name}{(character) LGA name in capitals, for example \code{MERRI-BEK}. Unincorporated areas end in \code{(UNINC)}.}
-\item{geometry}{(sfc_MULTIPOLYGON) Boundary, in longitude and latitude (WGS 84, EPSG:4326).}
+\item{lga_code}{(character) ABS LGA code.}
+\item{lga_name}{(character) LGA name in capitals, for example \code{MERRI-BEK}.}
+\item{unincorporated}{(logical) \code{TRUE} for the unincorporated areas (alpine resorts and islands).}
+\item{geometry}{(sfc_MULTIPOLYGON) Boundary, in longitude and latitude (WGS 84).}
 }
 }
 \source{
@@ -21,16 +21,13 @@ published 16 October 2026, licensed under
 \href{https://creativecommons.org/licenses/by/4.0/}{CC BY 4.0}.
 Retrieved 25 October 2026. \url{https://discover.data.vic.gov.au/dataset/vicmap-admin-local-government-area-lga-polygon-aligned-to-property}.
 
-\strong{Changes made:} only the ABS code and name columns were kept (renamed
-\code{lga_code} and \code{lga_name}); coordinates were converted from GDA2020 to
-WGS 84; geometry was simplified with a 100 m tolerance (the original is
-accurate to about 3 m); rows were sorted by name.
+\strong{Changes made:} kept the ABS code and name; merged the unincorporated areas into one \verb{UNINCORPORATED VIC}
+feature; added \code{unincorporated}; converted to WGS 84; simplified with a 100 m tolerance; sorted by name.
 }
 \usage{
 vic_lga
 }
 \description{
-Polygon boundaries for the 87 local government areas (LGAs) in Victoria, including the eight unincorporated alpine
-resort and island areas. Boundaries are simplified for mapping and are not suitable for precise boundary work.
+Simplified boundaries of the local government areas (LGAs) in Victoria, for mapping.
 }
 \keyword{datasets}
