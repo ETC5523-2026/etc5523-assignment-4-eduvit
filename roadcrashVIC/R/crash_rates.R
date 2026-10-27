@@ -14,6 +14,7 @@
 #'     \item{`fatalities_per_100k`}{People killed per 100,000 residents per year.}
 #'     \item{`serious_injuries_per_100k`}{People seriously injured per 100,000 residents per year.}
 #'     \item{`other_injuries_per_100k`}{People with other injuries per 100,000 residents per year.}
+#'     \item{`ksi_per_100k`}{People killed or seriously injured per 100,000 residents per year.}
 #'   }
 #' @examples
 #' # Victoria, year by year
@@ -36,6 +37,7 @@ crash_rates <- function(data, population, by = "year") {
       crashes_per_100k = 1e5 * crashes / population,
       fatalities_per_100k = 1e5 * fatalities / population,
       serious_injuries_per_100k = 1e5 * serious_injuries / population,
-      other_injuries_per_100k = 1e5 * other_injuries / population
+      other_injuries_per_100k = 1e5 * other_injuries / population,
+      ksi_per_100k = 1e5 * ksi / population
     )
 }

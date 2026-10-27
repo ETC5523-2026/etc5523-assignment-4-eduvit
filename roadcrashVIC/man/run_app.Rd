@@ -12,3 +12,6 @@ No return value; called for its side effect of launching the app.
 \description{
 Launch the Victorian road crash dashboard
 }
+\examples{
+if (interactive()) run_app()
+}

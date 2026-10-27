@@ -3,7 +3,7 @@
 #' One row per road crash in Victoria in which at least one person was injured or killed,
 #' from 1 January 2012 to 31 December 2025, as recorded by Victoria Police.
 #'
-#' @format A tibble with 202,065 rows and 48 columns:
+#' @format A tibble with 202,065 rows and 51 columns:
 #' \describe{
 #'   \item{accident_no}{(character) Unique crash identifier.}
 #'   \item{accident_date}{(Date) Date of the crash.}
@@ -53,6 +53,9 @@
 #'   \item{rma}{(character) Road classification, for example `Freeway` or `Local Road`.}
 #'   \item{divided}{(character) Whether the road is divided (`Divided` or `Undivided`).}
 #'   \item{stat_div_name}{(character) Statistical division (`Metro` or `Country`).}
+#'   \item{involves_pedestrian}{(logical) At least one pedestrian involved.}
+#'   \item{involves_cyclist}{(logical) At least one cyclist involved.}
+#'   \item{involves_motorcyclist}{(logical) At least one motorcyclist or pillion passenger involved.}
 #' }
 #'
 #' @source Victorian Government (Department of Transport and Planning),
@@ -63,7 +66,7 @@
 #'   Data last updated 13 October 2026; retrieved 25 October 2026.
 #'
 #'   **Changes made:** kept casualty crashes up to 31 December 2025; cleaned column names; added `year`, `month`,
-#'   `hour` and `road_full_name`; converted categories to factors; set `Unk.` and `Not known` to `NA`; matched LGA
+#'   `hour`, `road_full_name` and the `involves_*` columns; converted categories to factors; set `Unk.` and `Not known` to `NA`; matched LGA
 #'   names to [vic_lga]; removed `ACCIDENT_TIME`, `VICGRID_X`, `VICGRID_Y`, `ROAD_ROUTE_1`, `ROAD_NAME`, `ROAD_TYPE`,
 #'   `DCA_CODE` and `SRNS`.
 "vic_crashes"

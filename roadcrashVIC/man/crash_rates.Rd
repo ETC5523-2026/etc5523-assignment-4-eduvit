@@ -21,6 +21,7 @@ The columns of \code{\link[=summarise_crashes]{summarise_crashes()}}, plus:
 \item{\code{fatalities_per_100k}}{People killed per 100,000 residents per year.}
 \item{\code{serious_injuries_per_100k}}{People seriously injured per 100,000 residents per year.}
 \item{\code{other_injuries_per_100k}}{People with other injuries per 100,000 residents per year.}
+\item{\code{ksi_per_100k}}{People killed or seriously injured per 100,000 residents per year.}
 }
 }
 \description{

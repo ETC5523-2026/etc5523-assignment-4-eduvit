@@ -18,13 +18,16 @@ A tibble with one row per group, sorted by the grouping columns, with columns:
 \item{\code{fatalities}}{People killed.}
 \item{\code{serious_injuries}}{People seriously injured.}
 \item{\code{other_injuries}}{People with other injuries.}
+\item{\code{ksi}}{People killed or seriously injured.}
 \item{\code{fatalities_per_1000_crashes}}{People killed per 1,000 crashes.}
 \item{\code{serious_injuries_per_1000_crashes}}{People seriously injured per 1,000 crashes.}
 \item{\code{other_injuries_per_1000_crashes}}{People with other injuries per 1,000 crashes.}
+\item{\code{ksi_per_1000_crashes}}{People killed or seriously injured per 1,000 crashes.}
 }
 }
 \description{
 Counts crashes and people killed and injured in each group, and the number of casualties per 1,000 crashes.
+KSI is people killed or seriously injured.
 }
 \examples{
 summarise_crashes(vic_crashes, by = "hour")

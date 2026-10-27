@@ -5,7 +5,7 @@
 \alias{vic_crashes}
 \title{Victorian road crashes resulting in casualties, 2012 to 2025}
 \format{
-A tibble with 202,065 rows and 48 columns:
+A tibble with 202,065 rows and 51 columns:
 \describe{
 \item{accident_no}{(character) Unique crash identifier.}
 \item{accident_date}{(Date) Date of the crash.}
@@ -55,6 +55,9 @@ A tibble with 202,065 rows and 48 columns:
 \item{rma}{(character) Road classification, for example \code{Freeway} or \verb{Local Road}.}
 \item{divided}{(character) Whether the road is divided (\code{Divided} or \code{Undivided}).}
 \item{stat_div_name}{(character) Statistical division (\code{Metro} or \code{Country}).}
+\item{involves_pedestrian}{(logical) At least one pedestrian involved.}
+\item{involves_cyclist}{(logical) At least one cyclist involved.}
+\item{involves_motorcyclist}{(logical) At least one motorcyclist or pillion passenger involved.}
 }
 }
 \source{
@@ -66,7 +69,7 @@ licensed under
 Data last updated 13 October 2026; retrieved 25 October 2026.
 
 \strong{Changes made:} kept casualty crashes up to 31 December 2025; cleaned column names; added \code{year}, \code{month},
-\code{hour} and \code{road_full_name}; converted categories to factors; set \code{Unk.} and \verb{Not known} to \code{NA}; matched LGA
+\code{hour}, \code{road_full_name} and the \verb{involves_*} columns; converted categories to factors; set \code{Unk.} and \verb{Not known} to \code{NA}; matched LGA
 names to \link{vic_lga}; removed \code{ACCIDENT_TIME}, \code{VICGRID_X}, \code{VICGRID_Y}, \code{ROAD_ROUTE_1}, \code{ROAD_NAME}, \code{ROAD_TYPE},
 \code{DCA_CODE} and \code{SRNS}.
 }

@@ -44,7 +44,11 @@ vic_crashes <- readr::read_csv(raw_path, show_col_types = FALSE) |>
     year = lubridate::year(accident_date) |> as.integer(),
     month = factor(lubridate::month(accident_date), levels = 1:12, labels = month.abb),
     day_of_week = factor(day_of_week, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")),
-    severity = factor(severity, levels = c("Fatal accident", "Serious injury accident", "Other injury accident"))
+    severity = factor(severity, levels = c("Fatal accident", "Serious injury accident", "Other injury accident")),
+    # Vulnerable road users involved in the crash
+    involves_pedestrian = pedestrian > 0,
+    involves_cyclist = bicyclist > 0,
+    involves_motorcyclist = motorcyclist + pillion > 0
   ) |>
   dplyr::select(-accident_time, -vicgrid_x, -vicgrid_y, -road_route_1, -road_name, -road_type, -dca_code, -srns) |>
   dplyr::relocate(accident_no, accident_date, year, month, day_of_week, hour)
