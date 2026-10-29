@@ -171,8 +171,54 @@ ui <- page_navbar(
 )
 
 server <- function(input, output, session) {
-  # "About" link in the Victoria sidebar
+  # About tab
   observeEvent(input$vic_go_about, nav_select("main_nav", "About"))
+
+  # "VICTORIA" TAB
+  custom_year_data <- reactive(
+    vic_crashes |>
+      filter_crashes(
+        start_date = paste0(input$vic_years[1], "-01-01"),
+        end_date = paste0(input$vic_years[2], "-12-31")
+      )
+  )
+
+  # One row for the whole period: used by the value boxes
+  crash_summary_total <- reactive(
+    custom_year_data() |> summarise_crashes(by = character(0))
+  )
+
+  # One row per month / day / hour: used by the "When?" chart
+  crash_summary_when <- reactive(
+    custom_year_data() |> summarise_crashes(by = input$vic_when)
+  )
+
+  # First row: value boxes
+  output$vic_crashes_box <- renderText(
+    format(crash_summary_total()$crashes, big.mark = ",")
+  )
+  output$vic_ksi_box <- renderText(
+    format(crash_summary_total()$ksi, big.mark = ",")
+  )
+  output$vic_deaths_box <- renderText(
+    format(crash_summary_total()$fatalities, big.mark = ",")
+  )
+
+  # "MY AREA" TAB
+  # One row per selected lga_name
+  crash_summary_where <- reactive(
+    custom_year_data() |> summarise_crashes(by = input$area_lga)
+  )
+
+  output$area_crashes_box <- renderText(
+    format(crash_summary_where()$crashes, big.mark = ",")
+  )
+  output$area_ksi_box <- renderText(
+    format(crash_summary_where()$ksi, big.mark = ",")
+  )
+  output$area_deaths_box <- renderText(
+    format(crash_summary_where()$fatalities, big.mark = ",")
+  )  
 }
 
 shinyApp(ui, server)
