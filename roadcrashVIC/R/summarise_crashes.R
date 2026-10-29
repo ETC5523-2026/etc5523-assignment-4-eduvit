@@ -24,6 +24,7 @@
 #' vic_crashes |>
 #'   filter_crashes(start_date = "2022-01-01", end_date = "2024-12-31") |>
 #'   summarise_crashes(by = c("day_of_week", "hour"))
+#' 
 #' @export
 summarise_crashes <- function(data, by) {
   data |>
