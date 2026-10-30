@@ -36,4 +36,5 @@ crash_rates(vic_crashes, vic_population, by = "year")
 vic_crashes |>
   filter_crashes(start_date = "2021-01-01", end_date = "2025-12-31") |>
   crash_rates(vic_population, by = "lga_name")
+
 }

@@ -14,4 +14,5 @@ Launch the Victorian road crash dashboard
 }
 \examples{
 if (interactive()) run_app()
+
 }

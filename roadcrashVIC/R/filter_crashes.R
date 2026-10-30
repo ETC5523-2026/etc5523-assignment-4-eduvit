@@ -17,7 +17,7 @@
 #' nrow(filter_crashes(vic_crashes, start_date = "2020-01-01"))
 #'
 #' @export
-filter_crashes <- function(data, start_date = min(data$accident_date), end_date = max(data$accident_date)) {
+filter_crashes <- function(data, start_date = min(data$accident_date), end_date = max(data$accident_date)){
   start_date <- as.Date(start_date)
   end_date <- as.Date(end_date)
   first <- min(data$accident_date)

@@ -26,7 +26,7 @@
 #'   crash_rates(vic_population, by = "lga_name")
 #' 
 #' @export
-crash_rates <- function(data, population, by = "year") {
+crash_rates <- function(data, population, by = "year"){
   # Population of the same years as the crashes
   population <- population |>
     dplyr::filter(year %in% data$year) |>

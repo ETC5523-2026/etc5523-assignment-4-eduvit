@@ -26,7 +26,7 @@
 #'   summarise_crashes(by = c("day_of_week", "hour"))
 #' 
 #' @export
-summarise_crashes <- function(data, by) {
+summarise_crashes <- function(data, by){
   data |>
     dplyr::summarise(
       crashes = dplyr::n(),
