@@ -16,11 +16,12 @@ Maps can be zoomed and moved; hovering over an area or a crash shows its details
 
 **Per 100,000 residents:** yearly number of crashes, or of people killed or injured, for every 100,000 people living in the area.
 
-**Index (first year = 100):** each year's value relative to the first selected year, set to 100. It is included to compare crash trends with Victoria's strong population growth, and is not a standard road-safety measure.
+**Compare with population growth:** option of the trend chart that shows the selected values and the population relative to the first selected year, set to 100. It is included to compare crash trends with Victoria's strong population growth, and is not a standard road-safety measure.
 
 #### Things to keep in mind
 
 - Rates per resident include every crash within an area, including those involving visitors and through traffic.
+- A lower rate per resident does not necessarily mean safer roads, as it does not account for how much people drive.
 - Small areas and short periods have few crashes, so their figures can vary considerably by chance.
 - Crash numbers in 2020 and 2021 were affected by COVID-19 restrictions.
 - The location of part of the crashes from late 2025 has not been recorded yet. These crashes are included in Victorian totals, but not in the maps or in LGA figures.
