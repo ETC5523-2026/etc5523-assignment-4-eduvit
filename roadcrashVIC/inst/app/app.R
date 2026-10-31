@@ -24,7 +24,7 @@ when_choices <- c("Month" = "month", "Day of the week" = "day_of_week", "Hour of
 # Labels for plots
 measure_labels <- c(crashes = "Crashes", ksi = "KSI", fatalities = "Deaths")
 scale_labels <- c(count = "", per_100k = " per 100,000 residents", per_1000 = " per 1,000 crashes")
-road_title_words <- c(crashes = "crashes", ksi = "KSI", fatalities = "deaths")
+measure_words <- c(crashes = "crashes", ksi = "KSI", fatalities = "deaths")
 
 # Edges of Victoria, to bound the maps
 vic_bounds <- sf::st_bbox(vic_lga)
@@ -155,7 +155,8 @@ ui <- page_navbar(
       card(
         full_screen = TRUE, height = 500,
         card_header("How has it changed?"),
-        checkboxInput("vic_index", "Compare with population growth (first year = 100)"),
+        helpText("Each point is one year. A rising line means the chosen metric increased compared with earlier years."),
+        checkboxInput("vic_index", "Compare with population growth (first year = 100)", width = "100%"),
         plotOutput("vic_trend")
       ),
       layout_column_wrap(
@@ -165,18 +166,21 @@ ui <- page_navbar(
           full_screen = TRUE,
           card_header("When do crashes happen most?"),
           selectInput("vic_when", NULL, choices = when_choices),
+          helpText("Taller bars mark the times with higher values."),
           plotOutput("vic_when_chart")
         ),
         card(
           full_screen = TRUE,
           card_header("Who is the most vulnerable road user?"),
+          helpText("Select \"Per 1,000 crashes\" to compare severity across road users."),
           plotOutput("vic_vulnerable_chart"),
-          card_footer("Select \"Per 1,000 crashes\" to compare severity across road users.")
+          card_footer("Note: A crash can count in more than one bar.")
         )
       ),
       card(
         full_screen = TRUE, height = 700,
         card_header("Where do crashes happen most?"),
+        helpText("Darker areas have higher values of the chosen metric. Grey areas have no value."),
         leafletOutput("vic_map", height = 600)
       )
     )
@@ -232,12 +236,14 @@ ui <- page_navbar(
         card(
           full_screen = TRUE, height = 700,
           card_header("Where have crashes happened?"),
+          helpText("Each point is one crash, coloured by severity. Circles group nearby crashes."),
           leafletOutput("area_map", height = 600)
         ),
         card(
           full_screen = TRUE, height = 700,
           card_header(textOutput("area_roads_title")),
-          tableOutput("area_top_roads")
+          tableOutput("area_top_roads"),
+          card_footer("Note: A high rank does not always mean a dangerous road.")
         )
       ),
       layout_column_wrap(
@@ -247,13 +253,15 @@ ui <- page_navbar(
           full_screen = TRUE,
           card_header("When do crashes happen most?"),
           selectInput("area_when", NULL, choices = when_choices),
+          helpText("Taller bars mark the times with higher values."),
           plotOutput("area_when_chart")
         ),
         card(
           full_screen = TRUE,
           card_header("Who is the most vulnerable road user?"),
+          helpText("Select \"Per 1,000 crashes\" to compare severity across road users."),
           plotOutput("area_vulnerable_chart"),
-          card_footer("Select \"Per 1,000 crashes\" to compare severity across road users.")
+          card_footer("Note: A crash can count in more than one bar.")
         )
       )
     )
@@ -367,9 +375,18 @@ server <- function(input, output, session){
 
   output$vic_vulnerable_chart <- renderPlot({
     vic_check()
-    ggplot(vic_who_data(), aes(x = road_user, y = value)) +
+    d <- vic_who_data()
+    all <- d$value[d$road_user == "All crashes"]
+
+    ggplot(d[d$road_user != "All crashes", ], aes(x = value, y = road_user)) +
       geom_col() +
-      labs(x = NULL, y = vic_label())
+      labs(
+        x = vic_label(), y = NULL,
+        subtitle = paste0(
+          "All crashes: ", format(round(all, 1), big.mark = ",", nsmall = if (input$vic_scale == "count") 0 else 1), " ",
+          measure_words[[input$vic_measure]], scale_labels[[input$vic_scale]]
+        )
+      )
   })
 
   ## Fourth row: map
@@ -493,7 +510,7 @@ server <- function(input, output, session){
   })
 
   output$area_roads_title <- renderText(
-    paste0("Roads with the most ", road_title_words[[input$area_measure]], " (top 10)")
+    paste0("Roads with the most ", measure_words[[input$area_measure]], " (top 10)")
   )
 
   output$area_top_roads <- renderTable({
@@ -538,10 +555,17 @@ server <- function(input, output, session){
     validate(need(input$area_road_user == "all", "Choose \"All road users\" in \"Show crashes involving\" to compare road users."))
     d <- summarise_vulnerable(area_data())
     who <- data.frame(road_user = d$road_user, value = scaled_value(d, input$area_measure, input$area_scale, NA))
+    all <- who$value[who$road_user == "All crashes"]
 
-    ggplot(who, aes(x = road_user, y = value)) +
+    ggplot(who[who$road_user != "All crashes", ], aes(x = value, y = road_user)) +
       geom_col() +
-      labs(x = NULL, y = area_label())
+      labs(
+        x = area_label(), y = NULL,
+        subtitle = paste0(
+          "All crashes: ", format(round(all, 1), big.mark = ",", nsmall = if (input$area_scale == "count") 0 else 1), " ",
+          measure_words[[input$area_measure]], scale_labels[[input$area_scale]]
+        )
+      )
   })
 }
 
