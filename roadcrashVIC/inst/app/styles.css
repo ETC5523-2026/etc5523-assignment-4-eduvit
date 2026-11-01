@@ -1,0 +1,61 @@
+/* Website colours */
+:root {
+  --dark: #0d3b66;
+  --mid: #b3cfe7;
+  --light: #d6e6f2;
+  --text: #08131f;
+  --bs-body-color: var(--text); /* Bootstrap text colour */
+}
+
+/* Page */
+body {background-color: var(--light);}
+
+/* Tab bar */
+.navbar.navbar-default, .navbar.navbar-inverse {background-color: var(--mid) !important; border-bottom: 1px solid var(--dark);}
+.navbar .navbar-brand, .navbar .nav-link {color: var(--text) !important;}
+.navbar .nav-link.active {font-weight: bold; border-bottom: 2px solid var(--dark);}
+
+/* Intro box, as on the website */
+.app-intro {
+  background-color: var(--mid);
+  border: 2px solid var(--dark);
+  border-radius: 6px;
+  padding: 0.9rem 1.2rem;
+  margin: 1rem;
+}
+.app-intro p:last-child {margin-bottom: 0;}
+
+/* Cards, sidebar and value boxes */
+.card {background-color: #ffffff; border: 1px solid var(--dark); border-radius: 6px;}
+.bslib-sidebar-layout {border: 1px solid var(--dark); border-radius: 6px;}
+.bslib-sidebar-layout > .sidebar {background-color: var(--mid);}
+.card.bslib-value-box {background-color: var(--mid);}
+
+/* Error messages */
+.shiny-output-error-validation {color: var(--text);}
+
+/* Card headers and footers */
+.card-header, .card-footer {background-color: var(--light);}
+
+/* Footer with an empty note */
+.card-footer:has(.shiny-text-output:empty) {display: none;}
+
+/* Slider: no small ticks between years */
+.irs-grid-pol.small {display: none;}
+
+/* Help text (!important overrides Bootstrap) */
+.help-block, .irs-grid-text {color: var(--dark) !important;}
+
+/* Menu button on phones */
+.navbar .navbar-toggle, .navbar .navbar-toggler {background-color: var(--dark);}
+
+/* Map frame, as for images on the website */
+.leaflet-container {border: 1px solid var(--dark); border-radius: 6px;}
+
+/* Map clusters in blues */
+.marker-cluster-small {background-color: rgba(179, 207, 231, 0.6);}
+.marker-cluster-small div {background-color: rgba(179, 207, 231, 0.9);}
+.marker-cluster-medium {background-color: rgba(90, 140, 190, 0.6);}
+.marker-cluster-medium div {background-color: rgba(90, 140, 190, 0.9); color: #ffffff;}
+.marker-cluster-large {background-color: rgba(13, 59, 102, 0.6);}
+.marker-cluster-large div {background-color: rgba(13, 59, 102, 0.9); color: #ffffff;}

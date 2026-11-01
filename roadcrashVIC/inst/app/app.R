@@ -26,6 +26,9 @@ measure_labels <- c(crashes = "Crashes", ksi = "KSI", fatalities = "Deaths")
 scale_labels <- c(count = "", per_100k = " per 100,000 residents", per_1000 = " per 1,000 crashes")
 measure_words <- c(crashes = "crashes", ksi = "KSI", fatalities = "deaths")
 
+# Same look for every chart
+theme_set(theme_minimal(base_size = 13))
+
 # Edges of Victoria, to bound the maps
 vic_bounds <- sf::st_bbox(vic_lga)
 
@@ -104,9 +107,12 @@ box_value <- function(d, measure, scale){
 
 ui <- page_navbar(
   id = "main_nav",
+  theme = bs_theme(bootswatch = "cosmo", primary = "#0d3b66"),
   title = "Victoria Road Crash Explorer",
   fillable = FALSE, # let the page scroll
-  header = list(
+  header = div(
+    class = "app-intro",
+    includeCSS("styles.css"),
     p(
       class = "mb-1",
       strong(paste0(
@@ -117,7 +123,7 @@ ui <- page_navbar(
     p(
       paste0(
         "Road crashes resulting in injury or death recorded by Victoria Police from ", year_range[1], " to ",
-        year_range[2], ", for members of the public to explore across Victoria and in their local area."
+        year_range[2], ", for members of the public to explore across Victoria and in their local area"
       )
     )
   ),
@@ -126,15 +132,16 @@ ui <- page_navbar(
     layout_sidebar(
       sidebar = sidebar(
         sliderInput(
-          "vic_years", "Choose a time interval to analyse",
+          "vic_years", "Choose a period to analyse:",
           min = year_range[1],
           max = year_range[2],
           value = year_range,
           step = 1,
           sep = ""
-        ),
+        ) |>
+          tagAppendAttributes(`data-grid-snap` = "true", .cssSelector = "input"), # one tick per year
         selectInput(
-          "vic_measure", "Choose a metric to analyse",
+          "vic_measure", "Choose a metric to analyse:",
           choices = measure_choices
         ),
         selectInput(
@@ -143,7 +150,7 @@ ui <- page_navbar(
         ),
         helpText(
           "Definitions of each metric and scale, and notes on the data, are in the",
-          actionLink("vic_go_about", "About"), "tab."
+          actionLink("vic_go_about", "About"), "tab"
         )
       ),
       layout_column_wrap(
@@ -155,7 +162,7 @@ ui <- page_navbar(
       card(
         full_screen = TRUE, height = 500,
         card_header("How has it changed?"),
-        helpText("Each point is one year. A rising line means the chosen metric increased compared with earlier years."),
+        helpText("Each point is one year; a rising line means the chosen metric increased compared with earlier years"),
         checkboxInput("vic_index", "Compare with population growth (first year = 100)", width = "100%"),
         plotOutput("vic_trend")
       ),
@@ -165,22 +172,22 @@ ui <- page_navbar(
         card(
           full_screen = TRUE,
           card_header("When do crashes happen most?"),
-          selectInput("vic_when", NULL, choices = when_choices),
-          helpText("Taller bars mark the times with higher values."),
+          helpText("Taller bars mark the times with higher values"),
+          selectInput("vic_when", NULL, choices = when_choices, width = "200px"),
           plotOutput("vic_when_chart")
         ),
         card(
           full_screen = TRUE,
           card_header("Who is the most vulnerable road user?"),
-          helpText("Select \"Per 1,000 crashes\" to compare severity across road users."),
+          helpText("Select \"Per 1,000 crashes\" to compare severity across road users"),
           plotOutput("vic_vulnerable_chart"),
-          card_footer("Note: A crash can count in more than one bar.")
+          card_footer("Note: The same crash can appear in more than one bar")
         )
       ),
       card(
         full_screen = TRUE, height = 700,
         card_header("Where do crashes happen most?"),
-        helpText("Darker areas have higher values of the chosen metric. Grey areas have no value."),
+        helpText("Darker areas have higher values of the chosen metric; grey areas have no value"),
         leafletOutput("vic_map", height = 600)
       )
     )
@@ -195,10 +202,11 @@ ui <- page_navbar(
           multiple = TRUE,
           options = list(maxItems = 15, plugins = list("remove_button"))
         ),
-        actionButton("area_clear_lga", "Clear LGAs"),
+        actionButton("area_clear_lga", "Clear LGAs", class = "btn-primary"),
         airMonthpickerInput(
-          "area_months", "Period:",
+          "area_months", "Choose a period to analyse:",
           range = TRUE,
+          toggleSelected = FALSE, # clicking the same month twice selects that month only
           value = area_default_months,
           minDate = min(month_starts),
           maxDate = max(month_starts),
@@ -218,10 +226,10 @@ ui <- page_navbar(
           choices = c("All road users" = "all", "Pedestrians" = "pedestrian", "Cyclists" = "cyclist", "Motorcyclists" = "motorcyclist")
         ),
         helpText(
-          p("Selecting many LGAs or a long period may slow loading."),
-          p("Rates per 100,000 residents are not available in this tab, because population figures are only published yearly."),
-          p("The map and top roads show only the crashes matching the chosen metric (all, KSI or fatal)."),
-          p("Selecting a road user shows the crashes involving them. It does not show how many of them were injured.")
+          p("Selecting many LGAs or a long period may result in slower loading times"),
+          p("Rates per 100,000 residents are not available in this tab, because population figures are only published yearly"),
+          p("The map and top roads show only the crashes matching the chosen metric (all, KSI or fatal)"),
+          p("Selecting a road user shows the crashes involving them; it does not show how many of them were injured")
         )
       ),
       textOutput("area_missing_note"),
@@ -236,14 +244,14 @@ ui <- page_navbar(
         card(
           full_screen = TRUE, height = 700,
           card_header("Where have crashes happened?"),
-          helpText("Each point is one crash, coloured by severity. Circles group nearby crashes."),
+          helpText("Each point is one crash, coloured by severity; circles group nearby crashes"),
           leafletOutput("area_map", height = 600)
         ),
         card(
           full_screen = TRUE, height = 700,
           card_header(textOutput("area_roads_title")),
           tableOutput("area_top_roads"),
-          card_footer("Note: A high rank does not always mean a dangerous road.")
+          card_footer("Note: This is not a ranking of the most dangerous roads")
         )
       ),
       layout_column_wrap(
@@ -252,16 +260,17 @@ ui <- page_navbar(
         card(
           full_screen = TRUE,
           card_header("When do crashes happen most?"),
-          selectInput("area_when", NULL, choices = when_choices),
-          helpText("Taller bars mark the times with higher values."),
-          plotOutput("area_when_chart")
+          helpText("Taller bars mark the times with higher values"),
+          selectInput("area_when", NULL, choices = when_choices, width = "200px"),
+          plotOutput("area_when_chart"),
+          card_footer(textOutput("area_when_note")) # hidden when empty (styles.css)
         ),
         card(
           full_screen = TRUE,
           card_header("Who is the most vulnerable road user?"),
-          helpText("Select \"Per 1,000 crashes\" to compare severity across road users."),
+          helpText("Select \"Per 1,000 crashes\" to compare severity across road users"),
           plotOutput("area_vulnerable_chart"),
-          card_footer("Note: A crash can count in more than one bar.")
+          card_footer("Note: The same crash can appear in more than one bar")
         )
       )
     )
@@ -300,7 +309,7 @@ server <- function(input, output, session){
   vic_check <- reactive(
     validate(need(
       !(input$vic_measure == "crashes" & input$vic_scale == "per_1000"),
-      "Every crash counts as 1,000 per 1,000 crashes: choose KSI or deaths."
+      "Every crash counts as 1,000 per 1,000 crashes: choose KSI or deaths"
     ))
   )
 
@@ -360,6 +369,7 @@ server <- function(input, output, session){
     ggplot(trend, aes(x = year, y = value, colour = series)) +
       geom_point() +
       geom_line() +
+      scale_colour_manual(values = c("#0d3b66", "#e69f00")) + # chosen metric, then population
       scale_x_continuous(breaks = d$year) +
       labs(x = "Year", y = if (input$vic_index) "Index (first year = 100)" else vic_label(), colour = NULL) +
       theme(legend.position = if (input$vic_index) "bottom" else "none")
@@ -369,7 +379,7 @@ server <- function(input, output, session){
   output$vic_when_chart <- renderPlot({
     vic_check()
     ggplot(vic_when_data(), aes(x = when, y = value)) +
-      geom_col() +
+      geom_col(fill = "#0d3b66") +
       labs(x = names(when_choices)[when_choices == input$vic_when], y = vic_label())
   })
 
@@ -379,14 +389,15 @@ server <- function(input, output, session){
     all <- d$value[d$road_user == "All crashes"]
 
     ggplot(d[d$road_user != "All crashes", ], aes(x = value, y = road_user)) +
-      geom_col() +
+      geom_col(fill = "#0d3b66") +
       labs(
         x = vic_label(), y = NULL,
         subtitle = paste0(
           "All crashes: ", format(round(all, 1), big.mark = ",", nsmall = if (input$vic_scale == "count") 0 else 1), " ",
           measure_words[[input$vic_measure]], scale_labels[[input$vic_scale]]
         )
-      )
+      ) +
+      theme(plot.subtitle = element_text(face = "bold"))
   })
 
   ## Fourth row: map
@@ -425,7 +436,7 @@ server <- function(input, output, session){
 
   ## Crashes in the selected LGAs and months
   area_data <- reactive({
-    validate(need(input$area_lga, "Choose at least one LGA."))
+    validate(need(input$area_lga, "Choose at least one LGA"))
     vic_crashes |>
       filter_crashes(start_date = input$area_months[1], end_date = area_end()) |>
       filter(lga_name %in% input$area_lga)
@@ -450,7 +461,7 @@ server <- function(input, output, session){
     d <- area_user_data()
     if (input$area_measure == "ksi") d <- filter(d, severity != "Other injury accident")
     if (input$area_measure == "fatalities") d <- filter(d, severity == "Fatal accident")
-    validate(need(nrow(d) > 0, "No crashes match this selection."))
+    validate(need(nrow(d) > 0, "No crashes match this selection"))
     d
   })
 
@@ -458,7 +469,7 @@ server <- function(input, output, session){
   area_check <- reactive(
     validate(need(
       !(input$area_measure == "crashes" & input$area_scale == "per_1000"),
-      "Every crash counts as 1,000 per 1,000 crashes: choose KSI or deaths."
+      "Every crash counts as 1,000 per 1,000 crashes: choose KSI or deaths"
     ))
   )
 
@@ -471,7 +482,7 @@ server <- function(input, output, session){
   output$area_missing_note <- renderText({
     d <- filter_crashes(vic_crashes, start_date = input$area_months[1], end_date = area_end())
     missing <- 100 * mean(is.na(d$lga_name))
-    if (missing >= 3) paste0(round(missing), "% of crashes in this period have no recorded location and are not included.")
+    if (missing >= 3) paste0(round(missing), "% of crashes in this period have no recorded location and are not included")
   })
 
   ## First row: value boxes
@@ -498,7 +509,10 @@ server <- function(input, output, session){
         lng = ~longitude,
         lat = ~latitude,
         radius = 6,
-        stroke = FALSE,
+        stroke = TRUE, # white outline
+        color = "white",
+        weight = 1,
+        opacity = 1,
         fillColor = ~severity_pal(severity),
         fillOpacity = 0.9,
         label = lapply(hover, HTML), # read the <b> and <br> tags in each label
@@ -537,35 +551,38 @@ server <- function(input, output, session){
     area_check()
     d <- summarise_crashes(area_user_data(), by = input$area_when)
     when <- data.frame(when = d[[input$area_when]], value = scaled_value(d, input$area_measure, input$area_scale, NA))
-    # Months that appear more than once in the period make monthly counts uneven
-    n_months <- length(seq(as.Date(input$area_months[1]), as.Date(input$area_months[2]), by = "month"))
-    uneven <- input$area_when == "month" && input$area_scale == "count" && n_months %% 12 != 0
 
     ggplot(when, aes(x = when, y = value)) +
-      geom_col() +
-      labs(
-        x = names(when_choices)[when_choices == input$area_when], y = area_label(),
-        caption = if (uneven) "Note: some months appear more than once in the selected period and have higher bars." else NULL
-      ) +
-      theme(plot.caption = element_text(size = 12, hjust = 0), plot.caption.position = "plot")
+      geom_col(fill = "#0d3b66") +
+      labs(x = names(when_choices)[when_choices == input$area_when], y = area_label())
   })
+
+  output$area_when_note <- renderText({
+    req(input$area_lga)
+    # Months that appear more than once in the period make monthly counts uneven
+    n_months <- length(seq(as.Date(input$area_months[1]), area_end(), by = "month"))
+    uneven <- input$area_when == "month" && input$area_scale == "count" && n_months > 12 && n_months %% 12 != 0
+    if (uneven) "Note: Repeated months in the selected period have taller bars"
+  })
+  outputOptions(output, "area_when_note", suspendWhenHidden = FALSE) # update it while its footer is hidden
 
   output$area_vulnerable_chart <- renderPlot({
     area_check()
-    validate(need(input$area_road_user == "all", "Choose \"All road users\" in \"Show crashes involving\" to compare road users."))
+    validate(need(input$area_road_user == "all", "Choose \"All road users\" in \"Show crashes involving\" to compare road users"))
     d <- summarise_vulnerable(area_data())
     who <- data.frame(road_user = d$road_user, value = scaled_value(d, input$area_measure, input$area_scale, NA))
     all <- who$value[who$road_user == "All crashes"]
 
     ggplot(who[who$road_user != "All crashes", ], aes(x = value, y = road_user)) +
-      geom_col() +
+      geom_col(fill = "#0d3b66") +
       labs(
         x = area_label(), y = NULL,
         subtitle = paste0(
           "All crashes: ", format(round(all, 1), big.mark = ",", nsmall = if (input$area_scale == "count") 0 else 1), " ",
           measure_words[[input$area_measure]], scale_labels[[input$area_scale]]
         )
-      )
+      ) +
+      theme(plot.subtitle = element_text(face = "bold"))
   })
 }
 
