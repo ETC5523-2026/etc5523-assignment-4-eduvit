@@ -31,6 +31,10 @@ body {background-color: var(--light);}
 .bslib-sidebar-layout > .sidebar {background-color: var(--mid);}
 .card.bslib-value-box {background-color: var(--mid);}
 
+/* Sidebar: controls move with the page */
+.bslib-sidebar-layout > .sidebar {overflow: visible;}
+.bslib-sidebar-layout > .sidebar > .sidebar-content {position: sticky; top: 0;}
+
 /* Error messages */
 .shiny-output-error-validation {color: var(--text);}
 

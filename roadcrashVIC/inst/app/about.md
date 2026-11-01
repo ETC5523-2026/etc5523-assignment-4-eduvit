@@ -28,6 +28,12 @@ Maps can be zoomed and moved; hovering over an area or a crash shows a summary; 
 - The location of part of the crashes from late 2025 has not been recorded yet; these crashes count only in state-wide totals.
 - Alpine resorts and islands not administered by a council are grouped as `Unincorporated Vic.` Their resident population is small compared with the number of visitors, and no rate is shown for them.
 
+#### Future work
+
+- **Updated data**: the app currently covers crashes up to December 2025. Future versions could update the data automatically and include the most recent crashes.
+
+- **Traffic volumes**: a road with many crashes may simply be a road used by many cars. Adding the number of vehicles on each road would make it possible to compare roads fairly.
+
 #### Data sources
 
 [Victorian road crash data](https://discover.data.vic.gov.au/dataset/victoria-road-crash-data) - Department of Transport and Planning, CC BY 4.0.
