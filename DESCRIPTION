@@ -25,3 +25,7 @@ Imports:
     sf,
     shiny,
     shinyWidgets
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
