@@ -49,6 +49,9 @@ body {background-color: var(--light);}
 /* Menu button on phones */
 .navbar .navbar-toggle, .navbar .navbar-toggler {background-color: var(--dark);}
 
+/* Charts: normal cursor, as they can only be hovered */
+.js-plotly-plot .plotly .nsewdrag {cursor: default;}
+
 /* Map frame, as for images on the website */
 .leaflet-container {border: 1px solid var(--dark); border-radius: 6px;}
 

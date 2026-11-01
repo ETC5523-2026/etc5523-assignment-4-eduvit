@@ -2,7 +2,7 @@ library(shiny)
 library(shinyWidgets)
 library(bslib)
 library(dplyr)
-library(ggplot2)
+library(plotly)
 library(leaflet)
 library(sf)
 library(roadcrashVIC)
@@ -25,9 +25,6 @@ when_choices <- c("Month" = "month", "Day of the week" = "day_of_week", "Hour of
 measure_labels <- c(crashes = "Crashes", ksi = "KSI", fatalities = "Deaths")
 scale_labels <- c(count = "", per_100k = " per 100,000 residents", per_1000 = " per 1,000 crashes")
 measure_words <- c(crashes = "crashes", ksi = "KSI", fatalities = "deaths")
-
-# Same look for every chart
-theme_set(theme_minimal(base_size = 13))
 
 # Edges of Victoria, to bound the maps
 vic_bounds <- sf::st_bbox(vic_lga)
@@ -94,15 +91,27 @@ scaled_value <- function(d, measure, scale, population){
   value
 }
 
+# Number as text: whole for counts, one decimal for rates
+number_text <- function(x, scale){
+  digits <- if (scale == "count") 0 else 1
+  format(round(x, digits), big.mark = ",", nsmall = digits, trim = TRUE) # no padding spaces
+}
+
+# Hover label: "January", "Monday" or "17h"
+when_text <- function(when, by){
+  if (by == "month") return(month.name[as.integer(when)])
+  if (by == "hour") return(sprintf("%02dh", when))
+  as.character(when)
+}
+
 # Value box number
 box_value <- function(d, measure, scale){
-  if (measure == "crashes" & scale == "per_1000") return("-") # always 1,000
+  if (scale == "per_1000" & (measure == "crashes" | sum(d$crashes) == 0)) return("-") # always 1,000, or no crashes
   count <- d[[measure]]
   if (scale == "count") value <- sum(count) # total over the years
   if (scale == "per_100k") value <- 1e5 * sum(count) / sum(d$population) # average yearly rate
   if (scale == "per_1000") value <- 1000 * sum(count) / sum(d$crashes)
-  digits <- if (scale == "count") 0 else 1
-  format(round(value, digits), big.mark = ",", nsmall = digits)
+  number_text(value, scale)
 }
 
 ui <- page_navbar(
@@ -164,7 +173,7 @@ ui <- page_navbar(
         card_header("How has it changed?"),
         helpText("Each point is one year; a rising line means the chosen metric increased compared with earlier years"),
         checkboxInput("vic_index", "Compare with population growth (first year = 100)", width = "100%"),
-        plotOutput("vic_trend")
+        plotlyOutput("vic_trend")
       ),
       layout_column_wrap(
         width = 1/2,
@@ -174,13 +183,13 @@ ui <- page_navbar(
           card_header("When do crashes happen most?"),
           helpText("Taller bars mark the times with higher values"),
           selectInput("vic_when", NULL, choices = when_choices, width = "200px"),
-          plotOutput("vic_when_chart")
+          plotlyOutput("vic_when_chart")
         ),
         card(
           full_screen = TRUE,
           card_header("Who is the most vulnerable road user?"),
           helpText("Select \"Per 1,000 crashes\" to compare severity across road users"),
-          plotOutput("vic_vulnerable_chart"),
+          plotlyOutput("vic_vulnerable_chart"),
           card_footer("Note: The same crash can appear in more than one bar")
         )
       ),
@@ -206,7 +215,7 @@ ui <- page_navbar(
         airMonthpickerInput(
           "area_months", "Choose a period to analyse:",
           range = TRUE,
-          toggleSelected = FALSE, # clicking the same month twice selects that month only
+          toggleSelected = FALSE, # allow a single month
           value = area_default_months,
           minDate = min(month_starts),
           maxDate = max(month_starts),
@@ -262,14 +271,14 @@ ui <- page_navbar(
           card_header("When do crashes happen most?"),
           helpText("Taller bars mark the times with higher values"),
           selectInput("area_when", NULL, choices = when_choices, width = "200px"),
-          plotOutput("area_when_chart"),
+          plotlyOutput("area_when_chart"),
           card_footer(textOutput("area_when_note")) # hidden when empty (styles.css)
         ),
         card(
           full_screen = TRUE,
           card_header("Who is the most vulnerable road user?"),
           helpText("Select \"Per 1,000 crashes\" to compare severity across road users"),
-          plotOutput("area_vulnerable_chart"),
+          plotlyOutput("area_vulnerable_chart"),
           card_footer("Note: The same crash can appear in more than one bar")
         )
       )
@@ -318,6 +327,11 @@ server <- function(input, output, session){
     paste0(measure_labels[[input$vic_measure]], scale_labels[[input$vic_scale]])
   )
 
+  ## Unit in the hover text
+  vic_unit <- reactive(
+    paste0(measure_words[[input$vic_measure]], scale_labels[[input$vic_scale]])
+  )
+
   ## "When?": one value per month/day/hour
   vic_when_data <- reactive({
     d <- summarise_crashes(vic_data(), by = input$vic_when)
@@ -353,51 +367,67 @@ server <- function(input, output, session){
   output$vic_deaths_box <- renderText(box_value(vic_summary_year(), "fatalities", input$vic_scale))
 
   ## Second row: time trend
-  output$vic_trend <- renderPlot({
+  output$vic_trend <- renderPlotly({
     vic_check()
     d <- vic_summary_year()
     value <- scaled_value(d, input$vic_measure, input$vic_scale, d$population)
     trend <- data.frame(year = d$year, value = value, series = measure_labels[[input$vic_measure]])
+    trend$text <- paste(number_text(value, input$vic_scale), vic_unit())
 
     # Index: values and population, first year = 100
     if (input$vic_index) {
       trend$value <- 100 * trend$value / trend$value[1]
       population <- data.frame(year = d$year, value = 100 * d$population / d$population[1], series = "Population")
-      trend <- rbind(trend, population)
+      trend <- rbind(trend[names(population)], population)
+      trend$text <- paste0(trend$series, " index: ", round(trend$value, 1))
     }
 
-    ggplot(trend, aes(x = year, y = value, colour = series)) +
-      geom_point() +
-      geom_line() +
-      scale_colour_manual(values = c("#0d3b66", "#e69f00")) + # chosen metric, then population
-      scale_x_continuous(breaks = d$year) +
-      labs(x = "Year", y = if (input$vic_index) "Index (first year = 100)" else vic_label(), colour = NULL) +
-      theme(legend.position = if (input$vic_index) "bottom" else "none")
+    plot_ly(
+      trend, x = ~year, y = ~value, color = ~series,
+      colors = setNames(c("#0d3b66", "#e69f00"), c(measure_labels[[input$vic_measure]], "Population")),
+      type = "scatter", mode = "lines+markers",
+      text = ~text, hovertemplate = "%{x}: %{text}<extra></extra>"
+    ) |>
+      layout(
+        xaxis = list(fixedrange = TRUE, title = "Year", dtick = 1), # fixedrange: no zoom
+        yaxis = list(fixedrange = TRUE, title = if (input$vic_index) "Index (first year = 100)" else vic_label()),
+        showlegend = input$vic_index,
+        legend = list(orientation = "h", x = 0.5, xanchor = "center", y = 1.12, itemclick = FALSE, itemdoubleclick = FALSE)
+      ) |>
+      config(displayModeBar = FALSE)
   })
 
   ## Third row: "When?" + "Who?"
-  output$vic_when_chart <- renderPlot({
+  output$vic_when_chart <- renderPlotly({
     vic_check()
-    ggplot(vic_when_data(), aes(x = when, y = value)) +
-      geom_col(fill = "#0d3b66") +
-      labs(x = names(when_choices)[when_choices == input$vic_when], y = vic_label())
+    plot_ly(
+      vic_when_data(), x = ~when, y = ~value, type = "bar", marker = list(color = "#0d3b66"),
+      hovertext = ~paste0(when_text(when, input$vic_when), ": ", number_text(value, input$vic_scale)),
+      hovertemplate = paste0("%{hovertext} ", vic_unit(), "<extra></extra>")
+    ) |>
+      layout(
+        xaxis = list(fixedrange = TRUE, title = names(when_choices)[when_choices == input$vic_when]),
+        yaxis = list(fixedrange = TRUE, title = vic_label())
+      ) |>
+      config(displayModeBar = FALSE)
   })
 
-  output$vic_vulnerable_chart <- renderPlot({
+  output$vic_vulnerable_chart <- renderPlotly({
     vic_check()
     d <- vic_who_data()
     all <- d$value[d$road_user == "All crashes"]
 
-    ggplot(d[d$road_user != "All crashes", ], aes(x = value, y = road_user)) +
-      geom_col(fill = "#0d3b66") +
-      labs(
-        x = vic_label(), y = NULL,
-        subtitle = paste0(
-          "All crashes: ", format(round(all, 1), big.mark = ",", nsmall = if (input$vic_scale == "count") 0 else 1), " ",
-          measure_words[[input$vic_measure]], scale_labels[[input$vic_scale]]
-        )
-      ) +
-      theme(plot.subtitle = element_text(face = "bold"))
+    plot_ly(
+      d[d$road_user != "All crashes", ], x = ~value, y = ~road_user, type = "bar", orientation = "h",
+      marker = list(color = "#0d3b66"), hovertext = ~number_text(value, input$vic_scale),
+      hovertemplate = paste0("%{y}: %{hovertext} ", vic_unit(), "<extra></extra>")
+    ) |>
+      layout(
+        title = list(text = paste0("<b>All crashes: ", number_text(all, input$vic_scale), " ", vic_unit(), "</b>"), x = 0.02, font = list(size = 14)),
+        xaxis = list(fixedrange = TRUE, title = vic_label()),
+        yaxis = list(fixedrange = TRUE, title = "")
+      ) |>
+      config(displayModeBar = FALSE)
   })
 
   ## Fourth row: map
@@ -478,6 +508,11 @@ server <- function(input, output, session){
     paste0(measure_labels[[input$area_measure]], scale_labels[[input$area_scale]])
   )
 
+  ## Unit in the hover text
+  area_unit <- reactive(
+    paste0(measure_words[[input$area_measure]], scale_labels[[input$area_scale]])
+  )
+
   ## Note above the value boxes
   output$area_missing_note <- renderText({
     d <- filter_crashes(vic_crashes, start_date = input$area_months[1], end_date = area_end())
@@ -547,14 +582,22 @@ server <- function(input, output, session){
   }, digits = 0)
 
   ## Third row: "When?" + "Who?"
-  output$area_when_chart <- renderPlot({
+  output$area_when_chart <- renderPlotly({
     area_check()
+    validate(need(nrow(area_user_data()) > 0, "No crashes match this selection"))
     d <- summarise_crashes(area_user_data(), by = input$area_when)
     when <- data.frame(when = d[[input$area_when]], value = scaled_value(d, input$area_measure, input$area_scale, NA))
 
-    ggplot(when, aes(x = when, y = value)) +
-      geom_col(fill = "#0d3b66") +
-      labs(x = names(when_choices)[when_choices == input$area_when], y = area_label())
+    plot_ly(
+      when, x = ~when, y = ~value, type = "bar", marker = list(color = "#0d3b66"),
+      hovertext = ~paste0(when_text(when, input$area_when), ": ", number_text(value, input$area_scale)),
+      hovertemplate = paste0("%{hovertext} ", area_unit(), "<extra></extra>")
+    ) |>
+      layout(
+        xaxis = list(fixedrange = TRUE, title = names(when_choices)[when_choices == input$area_when]),
+        yaxis = list(fixedrange = TRUE, title = area_label())
+      ) |>
+      config(displayModeBar = FALSE)
   })
 
   output$area_when_note <- renderText({
@@ -564,25 +607,27 @@ server <- function(input, output, session){
     uneven <- input$area_when == "month" && input$area_scale == "count" && n_months > 12 && n_months %% 12 != 0
     if (uneven) "Note: Repeated months in the selected period have taller bars"
   })
-  outputOptions(output, "area_when_note", suspendWhenHidden = FALSE) # update it while its footer is hidden
+  outputOptions(output, "area_when_note", suspendWhenHidden = FALSE) # keep updating while hidden
 
-  output$area_vulnerable_chart <- renderPlot({
+  output$area_vulnerable_chart <- renderPlotly({
     area_check()
     validate(need(input$area_road_user == "all", "Choose \"All road users\" in \"Show crashes involving\" to compare road users"))
+    validate(need(nrow(area_data()) > 0, "No crashes match this selection"))
     d <- summarise_vulnerable(area_data())
     who <- data.frame(road_user = d$road_user, value = scaled_value(d, input$area_measure, input$area_scale, NA))
     all <- who$value[who$road_user == "All crashes"]
 
-    ggplot(who[who$road_user != "All crashes", ], aes(x = value, y = road_user)) +
-      geom_col(fill = "#0d3b66") +
-      labs(
-        x = area_label(), y = NULL,
-        subtitle = paste0(
-          "All crashes: ", format(round(all, 1), big.mark = ",", nsmall = if (input$area_scale == "count") 0 else 1), " ",
-          measure_words[[input$area_measure]], scale_labels[[input$area_scale]]
-        )
-      ) +
-      theme(plot.subtitle = element_text(face = "bold"))
+    plot_ly(
+      who[who$road_user != "All crashes", ], x = ~value, y = ~road_user, type = "bar", orientation = "h",
+      marker = list(color = "#0d3b66"), hovertext = ~number_text(value, input$area_scale),
+      hovertemplate = paste0("%{y}: %{hovertext} ", area_unit(), "<extra></extra>")
+    ) |>
+      layout(
+        title = list(text = paste0("<b>All crashes: ", number_text(all, input$area_scale), " ", area_unit(), "</b>"), x = 0.02, font = list(size = 14)),
+        xaxis = list(fixedrange = TRUE, title = area_label()),
+        yaxis = list(fixedrange = TRUE, title = "")
+      ) |>
+      config(displayModeBar = FALSE)
   })
 }
 

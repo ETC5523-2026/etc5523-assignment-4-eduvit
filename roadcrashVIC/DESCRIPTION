@@ -19,8 +19,8 @@ BugReports: https://github.com/ETC5523-2026/etc5523-assignment-4-eduvit/issues
 Imports: 
     bslib,
     dplyr,
-    ggplot2,
     leaflet,
+    plotly,
     sf,
     shiny,
     shinyWidgets
