@@ -31,7 +31,6 @@ Maps can be zoomed and moved; hovering over an area or a crash shows a summary; 
 #### Future work
 
 - **Updated data:** the app currently covers crashes up to December 2025. Future versions could update the data automatically and include the most recent crashes.
-
 - **Traffic volumes:** a road with many crashes may simply be a road used by many cars. Adding the number of vehicles on each road would make it possible to compare roads fairly.
 
 #### Data sources

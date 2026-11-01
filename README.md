@@ -1,0 +1,65 @@
+
+# roadcrashVIC
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+`roadcrashVIC` is an R package and Shiny app for exploring road crashes in Victoria, Australia, from 2012 to 2025: how they have changed over time, where and when they happen, and who is involved.
+
+Documentation website: <https://etc5523-2026.github.io/etc5523-assignment-4-eduvit/>
+
+## Intended user and question
+
+The app is designed for members of the public who want to understand road safety across the state or in their local area. It helps answer one question: **how have road crashes in Victoria changed since 2012, where do most crashes happen, when are they most frequent, and which road users are most vulnerable?**
+
+## What the package includes
+
+- cleaned data on every Victorian road crash that injured or killed at least one person, from 2012 to 2025, with local government area (LGA) boundaries and resident population;
+- functions to filter crashes by date, summarise them by any variable and calculate rates per 100,000 residents;
+- a Shiny app with two tabs: **Victoria**, for state-wide trends, times, road users and a map of LGAs; and **My area**, for crashes in one or more LGAs, including the location of each crash.
+
+## Installation
+
+The package requires R 4.1.0 or later. Install it from GitHub with:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("ETC5523-2026/etc5523-assignment-4-eduvit")
+```
+
+## Launching the app
+
+``` r
+library(roadcrashVIC)
+run_app()
+```
+
+The app opens in the browser or in the RStudio/Positron viewer. The **About** tab of the app explains every control, definition and limitation. All the data is included in the package; the background of the maps is loaded from the internet, and without a connection the maps show only the areas and the crashes.
+
+## Data
+
+- `vic_crashes`: crashes with at least one person injured or killed, 2012 to 2025 ([Victorian road crash data](https://discover.data.vic.gov.au/dataset/victoria-road-crash-data), Department of Transport and Planning)
+- `vic_lga`: LGA boundaries ([Vicmap Admin](https://discover.data.vic.gov.au/dataset/vicmap-admin-local-government-area-lga-polygon-aligned-to-property), Department of Transport and Planning)
+- `vic_population`: resident population of each LGA, 2012 to 2025 ([Regional population](https://www.abs.gov.au/statistics/people/population/regional-population/2024-25), Australian Bureau of Statistics)
+
+All sources are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); the changes made are listed on each help page, for example `?vic_crashes`.
+
+## License
+
+The package code is released under the MIT license (see `LICENSE.md`). The data remains under the CC BY 4.0 license of its sources.
+
+## Generative AI declaration
+
+I used Claude (Anthropic) during the development of this package to:
+
+* plan the work tasks, after I had decided the intended user, the question, the data sources and the layout of the dashboard;
+* point out compatibility issues between the data sources (LGA names, unincorporated areas) and write the code to solve them;
+* check the correctness of the `roxygen2` documentation;
+* fix many different issues in my versions of the UI and server code;
+* design the two maps, with several styling adjustments;
+* make titles, captions, headers and footers update with the selected inputs;
+* convert the `ggplot2` charts into interactive Plotly charts;
+* write the CSS that matches the app to my website, and fix the sidebar scrolling;
+* draft this README, the vignette and the pkgdown site.
+
+The question, the intended user, the choice of data, the structure of the app, the design choices, the metrics and all written text were drafted by the author. I reviewed every suggestion, tested every change on my computer, and decided what to include in the final version of the scripts.

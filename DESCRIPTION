@@ -1,6 +1,6 @@
 Package: roadcrashVIC
 Title: Explore Victorian Road Crashes
-Version: 0.0.1.0
+Version: 0.1.0
 Authors@R: 
     person("Eduardo", "Vitale", , "eduardo.vitale@studio.unibo.it", role = c("aut", "cre"))
 Description: Provides cleaned Victorian road crash data (casualty crashes, 2012 to 2025), local government
