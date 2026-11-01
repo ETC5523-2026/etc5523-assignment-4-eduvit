@@ -14,7 +14,7 @@ Maps can be zoomed and moved; hovering over an area or a crash shows a summary; 
 
 **Per 1,000 crashes:** people killed or seriously injured (KSI), or killed (deaths), for every 1,000 crashes. It measures how severe crashes were.
 
-**Per 100,000 residents:** yearly number of crashes, or of people killed or injured, for every 100,000 people living in the area.
+**Per 100k residents:** yearly number of crashes, or of people killed or injured, for every 100,000 people living in the area.
 
 **Compare with population growth:** option of the trend chart that shows the selected values and the population relative to the first selected year, set to 100. It compares crash trends with Victoria's strong population growth. It is not a standard road-safety measure.
 
@@ -25,14 +25,14 @@ Maps can be zoomed and moved; hovering over an area or a crash shows a summary; 
 - Roads with the most crashes are not necessarily the most dangerous. Busier roads have more crashes, and traffic volumes are not available in this analysis.
 - Small areas and short periods have few crashes, so their figures can vary considerably by chance.
 - Crash numbers in 2020 and 2021 were affected by COVID-19 restrictions.
-- The location of part of the crashes from late 2025 has not been recorded yet; these crashes count only in state-wide totals.
+- Some crashes from late 2025 do not have a recorded location yet; these crashes count only in state-wide totals.
 - Alpine resorts and islands not administered by a council are grouped as `Unincorporated Vic.` Their resident population is small compared with the number of visitors, and no rate is shown for them.
 
 #### Future work
 
-- **Updated data**: the app currently covers crashes up to December 2025. Future versions could update the data automatically and include the most recent crashes.
+- **Updated data:** the app currently covers crashes up to December 2025. Future versions could update the data automatically and include the most recent crashes.
 
-- **Traffic volumes**: a road with many crashes may simply be a road used by many cars. Adding the number of vehicles on each road would make it possible to compare roads fairly.
+- **Traffic volumes:** a road with many crashes may simply be a road used by many cars. Adding the number of vehicles on each road would make it possible to compare roads fairly.
 
 #### Data sources
 

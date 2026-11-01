@@ -23,7 +23,7 @@ when_choices <- c("Month" = "month", "Day of the week" = "day_of_week", "Hour of
 
 # Labels for plots
 measure_labels <- c(crashes = "Crashes", ksi = "KSI", fatalities = "Deaths")
-scale_labels <- c(count = "", per_100k = " per 100,000 residents", per_1000 = " per 1,000 crashes")
+scale_labels <- c(count = "", per_100k = " per 100k residents", per_1000 = " per 1,000 crashes")
 measure_words <- c(crashes = "crashes", ksi = "KSI", fatalities = "deaths")
 
 # Edges of Victoria, to bound the maps
@@ -114,6 +114,12 @@ box_value <- function(d, measure, scale){
   number_text(value, scale)
 }
 
+# Value box title
+box_title <- function(name, scale){
+  if (scale == "count") return(name)
+  paste0(name, " (", trimws(scale_labels[[scale]]), ")")
+}
+
 ui <- page_navbar(
   id = "main_nav",
   theme = bs_theme(bootswatch = "cosmo", primary = "#0d3b66"),
@@ -164,9 +170,9 @@ ui <- page_navbar(
       ),
       layout_column_wrap(
         width = 1/3,
-        value_box(title = "Crashes", value = textOutput("vic_crashes_box")),
-        value_box(title = "KSI", value = textOutput("vic_ksi_box")),
-        value_box(title = "Deaths", value = textOutput("vic_deaths_box"))
+        value_box(title = textOutput("vic_crashes_title"), value = textOutput("vic_crashes_box")),
+        value_box(title = textOutput("vic_ksi_title"), value = textOutput("vic_ksi_box")),
+        value_box(title = textOutput("vic_deaths_title"), value = textOutput("vic_deaths_box"))
       ),
       card(
         full_screen = TRUE, height = 500,
@@ -236,7 +242,7 @@ ui <- page_navbar(
         ),
         helpText(
           p("Selecting many LGAs or a long period may result in slower loading times"),
-          p("Rates per 100,000 residents are not available in this tab, because population figures are only published yearly"),
+          p("Rates per 100k residents are not available in this tab, because population figures are only published yearly"),
           p("The map and top roads show only the crashes matching the chosen metric (all, KSI or fatal)"),
           p("Selecting a road user shows the crashes involving them; it does not show how many of them were injured")
         )
@@ -244,9 +250,9 @@ ui <- page_navbar(
       textOutput("area_missing_note"),
       layout_column_wrap(
         width = 1/3,
-        value_box(title = "Crashes", value = textOutput("area_crashes_box")),
-        value_box(title = "KSI", value = textOutput("area_ksi_box")),
-        value_box(title = "Deaths", value = textOutput("area_deaths_box"))
+        value_box(title = textOutput("area_crashes_title"), value = textOutput("area_crashes_box")),
+        value_box(title = textOutput("area_ksi_title"), value = textOutput("area_ksi_box")),
+        value_box(title = textOutput("area_deaths_title"), value = textOutput("area_deaths_box"))
       ),
       layout_columns(
         col_widths = c(7, 5),
@@ -365,6 +371,10 @@ server <- function(input, output, session){
   output$vic_crashes_box <- renderText(box_value(vic_summary_year(), "crashes", input$vic_scale))
   output$vic_ksi_box <- renderText(box_value(vic_summary_year(), "ksi", input$vic_scale))
   output$vic_deaths_box <- renderText(box_value(vic_summary_year(), "fatalities", input$vic_scale))
+
+  output$vic_crashes_title <- renderText(box_title("Crashes", input$vic_scale))
+  output$vic_ksi_title <- renderText(box_title("KSI", input$vic_scale))
+  output$vic_deaths_title <- renderText(box_title("Deaths", input$vic_scale))
 
   ## Second row: time trend
   output$vic_trend <- renderPlotly({
@@ -524,6 +534,10 @@ server <- function(input, output, session){
   output$area_crashes_box <- renderText(box_value(area_summary_total(), "crashes", input$area_scale))
   output$area_ksi_box <- renderText(box_value(area_summary_total(), "ksi", input$area_scale))
   output$area_deaths_box <- renderText(box_value(area_summary_total(), "fatalities", input$area_scale))
+
+  output$area_crashes_title <- renderText(box_title("Crashes", input$area_scale))
+  output$area_ksi_title <- renderText(box_title("KSI", input$area_scale))
+  output$area_deaths_title <- renderText(box_title("Deaths", input$area_scale))
 
   ## Second row: map + top roads
   output$area_map <- renderLeaflet({
