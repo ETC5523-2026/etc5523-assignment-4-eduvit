@@ -1,0 +1,22 @@
+url: https://etc5523-2026.github.io/etc5523-assignment-4-eduvit/
+template:
+  bootstrap: 5
+  bslib:
+    primary: "#0d3b66"
+
+reference:
+  - title: Launch the app
+    contents:
+      - run_app
+  - title: Data
+    contents:
+      - vic_crashes
+      - vic_lga
+      - vic_population
+  - title: Functions
+    contents:
+      - filter_crashes
+      - summarise_crashes
+      - crash_rates
+      - summarise_vulnerable
+
