@@ -527,7 +527,7 @@ server <- function(input, output, session){
   output$area_missing_note <- renderText({
     d <- filter_crashes(vic_crashes, start_date = input$area_months[1], end_date = area_end())
     missing <- 100 * mean(is.na(d$lga_name))
-    if (missing >= 3) paste0(round(missing), "% of crashes in this period have no recorded location and are not included")
+    if (missing >= 3) paste0("Note: ", round(missing), "% of crashes in this period have no recorded location and are not included")
   })
 
   ## First row: value boxes

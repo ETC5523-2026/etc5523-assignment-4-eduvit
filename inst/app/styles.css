@@ -31,6 +31,12 @@ body {background-color: var(--light);}
 .bslib-sidebar-layout {border: 1px solid var(--dark); border-radius: 6px;}
 .bslib-sidebar-layout > .sidebar {background-color: var(--mid); overflow: visible;}
 .card.bslib-value-box {background-color: var(--mid);}
+
+/* Value boxes: centred, larger number, less padding */
+.bslib-value-box .value-box-area {align-items: center; text-align: center; padding-top: 0.6rem !important; padding-bottom: 0.6rem !important;}
+.bslib-value-box .value-box-value {font-size: 2.6rem;}
+.bslib-value-box .value-box-title {font-weight: 600;}
+.bslib-value-box .shiny-output-error-validation {font-size: 1.5rem;} /* messages smaller than numbers, on one line */
 .bslib-sidebar-layout > .sidebar > .sidebar-content {position: sticky; top: 0;}
 
 /* Error messages */
@@ -38,12 +44,19 @@ body {background-color: var(--light);}
 
 /* Card headers and footers */
 .card-header, .card-footer {background-color: var(--light);}
+.card-header {font-weight: 600;}
 
 /* Footer with an empty note */
 .card-footer:has(.shiny-text-output:empty) {display: none;}
 
 /* Slider: no small ticks between years */
 .irs-grid-pol.small {display: none;}
+
+/* Note above the value boxes, like the help text */
+#area_missing_note {color: var(--dark);}
+
+/* About tab: same text width as the website */
+.tab-pane[data-value="About"] {max-width: 900px; margin: 0 auto;}
 
 /* Help text (!important overrides Bootstrap) */
 .help-block, .irs-grid-text {color: var(--dark) !important;}
