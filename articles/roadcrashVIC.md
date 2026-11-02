@@ -173,6 +173,10 @@ run_app()
 - **When do crashes happen most?:** a menu above the chart to show
   months, days of the week or hours of the day.
 
+![Victoria tab: controls and trend](app-victoria.png)
+
+Victoria tab: controls and trend
+
 ### My area
 
 - **Choose one or more LGAs to analyse:** up to 15 LGAs; **Clear LGAs**
@@ -184,6 +188,10 @@ run_app()
   only published yearly.
 - **Show crashes involving:** all crashes, or only those involving
   pedestrians, cyclists or motorcyclists.
+
+![My area tab: map and roads](app-my-area.png)
+
+My area tab: map and roads
 
 ## Selections that are not allowed
 
