@@ -238,8 +238,8 @@ October 2026; retrieved 25 October 2026.
 
 **Changes made:** kept casualty crashes up to 31 December 2025; cleaned
 column names; added `year`, `month`, `hour`, `road_full_name` and the
-`involves_*` columns; converted categories to factors; set `Unk.` and
-`Not known` to `NA`; matched LGA names to
+`involves_*` columns; converted categories to factors; set `Unk.`,
+`Unknown` and `Not known` to `NA`; matched LGA names to
 [vic_lga](https://etc5523-2026.github.io/etc5523-assignment-4-eduvit/reference/vic_lga.md);
 removed `ACCIDENT_TIME`, `VICGRID_X`, `VICGRID_Y`, `ROAD_ROUTE_1`,
 `ROAD_NAME`, `ROAD_TYPE`, `DCA_CODE` and `SRNS`.

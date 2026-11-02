@@ -3,7 +3,7 @@
 ## Launch the app
 
 - [`run_app()`](https://etc5523-2026.github.io/etc5523-assignment-4-eduvit/reference/run_app.md)
-  : Launch the Victorian road crash dashboard
+  : Launch the Victorian road crash app
 
 ## Data
 

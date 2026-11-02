@@ -1,6 +1,7 @@
-# Launch the Victorian road crash dashboard
+# Launch the Victorian road crash app
 
-Launch the Victorian road crash dashboard
+Opens the Shiny app included in the package, in the browser or in the
+RStudio/Positron viewer.
 
 ## Usage
 
