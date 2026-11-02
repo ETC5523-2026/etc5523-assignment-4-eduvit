@@ -9,7 +9,8 @@
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="roadcrashVIC">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<meta property="og:title" content="roadcrashVIC">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -89,13 +90,17 @@ GitHub:</p>
 in which at least one person was injured or killed, from 2012 to 2025,
 as recorded by Victoria Police:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">vic_crashes</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"accident_date"</span>, <span class="st">"lga_name"</span>, <span class="st">"severity"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;   accident_date   lga_name                severity</span></span>
-<span><span class="co">#&gt; 1    2014-11-27 WELLINGTON   Other injury accident</span></span>
-<span><span class="co">#&gt; 2    2019-12-27    BANYULE   Other injury accident</span></span>
-<span><span class="co">#&gt; 3    2019-10-02   BRIMBANK   Other injury accident</span></span>
-<span><span class="co">#&gt; 4    2025-11-07       KNOX Serious injury accident</span></span>
-<span><span class="co">#&gt; 5    2021-01-30   CARDINIA Serious injury accident</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">vic_crashes</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">accident_date</span>, <span class="va">lga_name</span>, <span class="va">severity</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 3</span></span></span>
+<span><span class="co">#&gt;   accident_date lga_name   severity               </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>                  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2014-11-27    WELLINGTON Other injury accident  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2019-12-27    BANYULE    Other injury accident  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2019-10-02    BRIMBANK   Other injury accident  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2025-11-07    KNOX       Serious injury accident</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 2021-01-30    CARDINIA   Serious injury accident</span></span></code></pre></div>
 <p>Two further datasets support rates and maps:
 <code>vic_population</code>, the resident population of each local
 government area (LGA) by year, and <code>vic_lga</code>, the LGA
@@ -115,6 +120,8 @@ original files.</p>
 both included:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">crashes_2025</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/filter_crashes.html">filter_crashes</a></span><span class="op">(</span><span class="va">vic_crashes</span>, start_date <span class="op">=</span> <span class="st">"2025-01-01"</span>, end_date <span class="op">=</span> <span class="st">"2025-12-31"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">crashes_2025</span><span class="op">$</span><span class="va">accident_date</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "2025-01-01" "2025-12-31"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">crashes_2025</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 15468</span></span></code></pre></div>
 </div>
@@ -125,17 +132,20 @@ both included:</p>
 injured in each group, and the same casualties per 1,000 crashes. KSI
 stands for people killed or seriously injured.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/summarise_crashes.html">summarise_crashes</a></span><span class="op">(</span><span class="va">crashes_2025</span>, by <span class="op">=</span> <span class="st">"day_of_week"</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"day_of_week"</span>, <span class="st">"crashes"</span>, <span class="st">"ksi"</span>, <span class="st">"ksi_per_1000_crashes"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 7 × 4</span></span></span>
-<span><span class="co">#&gt;   day_of_week crashes   ksi ksi_per_1000_crashes</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Monday         <span style="text-decoration: underline;">2</span>065   845                 409.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Tuesday        <span style="text-decoration: underline;">2</span>307   883                 383.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Wednesday      <span style="text-decoration: underline;">2</span>340   946                 404.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Thursday       <span style="text-decoration: underline;">2</span>290   856                 374.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Friday         <span style="text-decoration: underline;">2</span>386   966                 405.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Saturday       <span style="text-decoration: underline;">2</span>158   992                 460.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> Sunday         <span style="text-decoration: underline;">1</span>922   910                 473.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/summarise_crashes.html">summarise_crashes</a></span><span class="op">(</span><span class="va">crashes_2025</span>, by <span class="op">=</span> <span class="st">"day_of_week"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 7 × 10</span></span></span>
+<span><span class="co">#&gt;   day_of_week crashes fatalities serious_injuries other_injuries   ksi</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Monday         <span style="text-decoration: underline;">2</span>065         41              804           <span style="text-decoration: underline;">1</span>735   845</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Tuesday        <span style="text-decoration: underline;">2</span>307         31              852           <span style="text-decoration: underline;">1</span>994   883</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Wednesday      <span style="text-decoration: underline;">2</span>340         41              905           <span style="text-decoration: underline;">2</span>007   946</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Thursday       <span style="text-decoration: underline;">2</span>290         46              810           <span style="text-decoration: underline;">1</span>949   856</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Friday         <span style="text-decoration: underline;">2</span>386         45              921           <span style="text-decoration: underline;">2</span>016   966</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Saturday       <span style="text-decoration: underline;">2</span>158         32              960           <span style="text-decoration: underline;">1</span>907   992</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> Sunday         <span style="text-decoration: underline;">1</span>922         53              857           <span style="text-decoration: underline;">1</span>687   910</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 more variables: fatalities_per_1000_crashes &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   serious_injuries_per_1000_crashes &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   other_injuries_per_1000_crashes &lt;dbl&gt;, ksi_per_1000_crashes &lt;dbl&gt;</span></span></span></code></pre></div>
 <p>The group can be any column of <code>vic_crashes</code>, or several
 columns together, for example
 <code>by = c("day_of_week", "hour")</code>.</p>
@@ -148,7 +158,8 @@ columns together, for example
 100,000 residents, which make years or LGAs of different sizes
 comparable:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/crash_rates.html">crash_rates</a></span><span class="op">(</span><span class="va">vic_crashes</span>, <span class="va">vic_population</span>, by <span class="op">=</span> <span class="st">"year"</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"year"</span>, <span class="st">"crashes"</span>, <span class="st">"population"</span>, <span class="st">"crashes_per_100k"</span><span class="op">)</span><span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/crash_rates.html">crash_rates</a></span><span class="op">(</span><span class="va">vic_crashes</span>, <span class="va">vic_population</span>, by <span class="op">=</span> <span class="st">"year"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">crashes</span>, <span class="va">population</span>, <span class="va">crashes_per_100k</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 14 × 4</span></span></span>
 <span><span class="co">#&gt;     year crashes population crashes_per_100k</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
@@ -176,7 +187,8 @@ over the years of the data.</p>
 <code><a href="../reference/summarise_crashes.html">summarise_crashes()</a></code> to all crashes and to the crashes
 involving a pedestrian, a cyclist or a motorcyclist:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/summarise_vulnerable.html">summarise_vulnerable</a></span><span class="op">(</span><span class="va">vic_crashes</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"road_user"</span>, <span class="st">"crashes"</span>, <span class="st">"ksi_per_1000_crashes"</span><span class="op">)</span><span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/summarise_vulnerable.html">summarise_vulnerable</a></span><span class="op">(</span><span class="va">vic_crashes</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">road_user</span>, <span class="va">crashes</span>, <span class="va">ksi_per_1000_crashes</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 3</span></span></span>
 <span><span class="co">#&gt;   road_user    crashes ksi_per_1000_crashes</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
@@ -221,7 +233,8 @@ the population.</li>
 chart to show months, days of the week or hours of the day.</li>
 </ul>
 <div class="float">
-<img src="app-victoria.png" alt="Victoria tab: controls and trend"><div class="figcaption">Victoria tab: controls and trend</div>
+<img src="app-victoria.png" alt="The Victoria tab: sidebar controls, value boxes and the trend chart"><div class="figcaption">The Victoria tab: sidebar controls, value boxes
+and the trend chart</div>
 </div>
 </div>
 <div class="section level3">
@@ -243,7 +256,8 @@ population figures are only published yearly.</li>
 involving pedestrians, cyclists or motorcyclists.</li>
 </ul>
 <div class="float">
-<img src="app-my-area.png" alt="My area tab: map and roads"><div class="figcaption">My area tab: map and roads</div>
+<img src="app-my-area.png" alt="The My area tab: crash locations and the roads with the most crashes in the selected LGAs"><div class="figcaption">The My area tab: crash locations and the roads
+with the most crashes in the selected LGAs</div>
 </div>
 </div>
 </div>

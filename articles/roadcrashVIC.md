@@ -35,13 +35,17 @@ by Victoria Police:
 
 ``` r
 
-vic_crashes[1:5, c("accident_date", "lga_name", "severity")]
-#>   accident_date   lga_name                severity
-#> 1    2014-11-27 WELLINGTON   Other injury accident
-#> 2    2019-12-27    BANYULE   Other injury accident
-#> 3    2019-10-02   BRIMBANK   Other injury accident
-#> 4    2025-11-07       KNOX Serious injury accident
-#> 5    2021-01-30   CARDINIA Serious injury accident
+vic_crashes |>
+  dplyr::select(accident_date, lga_name, severity) |>
+  head(5)
+#> # A tibble: 5 × 3
+#>   accident_date lga_name   severity               
+#>   <date>        <chr>      <fct>                  
+#> 1 2014-11-27    WELLINGTON Other injury accident  
+#> 2 2019-12-27    BANYULE    Other injury accident  
+#> 3 2019-10-02    BRIMBANK   Other injury accident  
+#> 4 2025-11-07    KNOX       Serious injury accident
+#> 5 2021-01-30    CARDINIA   Serious injury accident
 ```
 
 Two further datasets support rates and maps: `vic_population`, the
@@ -64,6 +68,8 @@ keeps the crashes between two dates, both included:
 ``` r
 
 crashes_2025 <- filter_crashes(vic_crashes, start_date = "2025-01-01", end_date = "2025-12-31")
+range(crashes_2025$accident_date)
+#> [1] "2025-01-01" "2025-12-31"
 nrow(crashes_2025)
 #> [1] 15468
 ```
@@ -77,17 +83,20 @@ injured.
 
 ``` r
 
-summarise_crashes(crashes_2025, by = "day_of_week")[, c("day_of_week", "crashes", "ksi", "ksi_per_1000_crashes")]
-#> # A tibble: 7 × 4
-#>   day_of_week crashes   ksi ksi_per_1000_crashes
-#>   <fct>         <int> <dbl>                <dbl>
-#> 1 Monday         2065   845                 409.
-#> 2 Tuesday        2307   883                 383.
-#> 3 Wednesday      2340   946                 404.
-#> 4 Thursday       2290   856                 374.
-#> 5 Friday         2386   966                 405.
-#> 6 Saturday       2158   992                 460.
-#> 7 Sunday         1922   910                 473.
+summarise_crashes(crashes_2025, by = "day_of_week")
+#> # A tibble: 7 × 10
+#>   day_of_week crashes fatalities serious_injuries other_injuries   ksi
+#>   <fct>         <int>      <dbl>            <dbl>          <dbl> <dbl>
+#> 1 Monday         2065         41              804           1735   845
+#> 2 Tuesday        2307         31              852           1994   883
+#> 3 Wednesday      2340         41              905           2007   946
+#> 4 Thursday       2290         46              810           1949   856
+#> 5 Friday         2386         45              921           2016   966
+#> 6 Saturday       2158         32              960           1907   992
+#> 7 Sunday         1922         53              857           1687   910
+#> # ℹ 4 more variables: fatalities_per_1000_crashes <dbl>,
+#> #   serious_injuries_per_1000_crashes <dbl>,
+#> #   other_injuries_per_1000_crashes <dbl>, ksi_per_1000_crashes <dbl>
 ```
 
 The group can be any column of `vic_crashes`, or several columns
@@ -102,7 +111,8 @@ make years or LGAs of different sizes comparable:
 
 ``` r
 
-crash_rates(vic_crashes, vic_population, by = "year")[, c("year", "crashes", "population", "crashes_per_100k")]
+crash_rates(vic_crashes, vic_population, by = "year") |>
+  dplyr::select(year, crashes, population, crashes_per_100k)
 #> # A tibble: 14 × 4
 #>     year crashes population crashes_per_100k
 #>    <int>   <int>      <dbl>            <dbl>
@@ -135,7 +145,8 @@ motorcyclist:
 
 ``` r
 
-summarise_vulnerable(vic_crashes)[, c("road_user", "crashes", "ksi_per_1000_crashes")]
+summarise_vulnerable(vic_crashes) |>
+  dplyr::select(road_user, crashes, ksi_per_1000_crashes)
 #> # A tibble: 4 × 3
 #>   road_user    crashes ksi_per_1000_crashes
 #>   <chr>          <int>                <dbl>
@@ -173,9 +184,10 @@ run_app()
 - **When do crashes happen most?:** a menu above the chart to show
   months, days of the week or hours of the day.
 
-![Victoria tab: controls and trend](app-victoria.png)
+![The Victoria tab: sidebar controls, value boxes and the trend
+chart](app-victoria.png)
 
-Victoria tab: controls and trend
+The Victoria tab: sidebar controls, value boxes and the trend chart
 
 ### My area
 
@@ -189,9 +201,11 @@ Victoria tab: controls and trend
 - **Show crashes involving:** all crashes, or only those involving
   pedestrians, cyclists or motorcyclists.
 
-![My area tab: map and roads](app-my-area.png)
+![The My area tab: crash locations and the roads with the most crashes
+in the selected LGAs](app-my-area.png)
 
-My area tab: map and roads
+The My area tab: crash locations and the roads with the most crashes in
+the selected LGAs
 
 ## Selections that are not allowed
 
