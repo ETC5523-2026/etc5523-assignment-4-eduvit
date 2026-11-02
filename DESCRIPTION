@@ -7,7 +7,7 @@ Description: Provides cleaned Victorian road crash data (casualty crashes, 2012 
     area boundaries and resident population, with functions to filter crashes by date, summarise them by any variable
     and calculate rates per 100,000 residents. Includes a Shiny app for exploring how road trauma has changed
     across Victoria, when and where crashes happen, and which road users are most affected, state-wide or in
-    selected local areas (LGA).
+    selected local areas (LGAs).
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

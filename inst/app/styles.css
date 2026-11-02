@@ -26,13 +26,11 @@ body {background-color: var(--light);}
 .app-intro p:last-child {margin-bottom: 0;}
 
 /* Cards, sidebar and value boxes */
+/* Sidebar: controls move with the page */
 .card {background-color: #ffffff; border: 1px solid var(--dark); border-radius: 6px;}
 .bslib-sidebar-layout {border: 1px solid var(--dark); border-radius: 6px;}
-.bslib-sidebar-layout > .sidebar {background-color: var(--mid);}
+.bslib-sidebar-layout > .sidebar {background-color: var(--mid); overflow: visible;}
 .card.bslib-value-box {background-color: var(--mid);}
-
-/* Sidebar: controls move with the page */
-.bslib-sidebar-layout > .sidebar {overflow: visible;}
 .bslib-sidebar-layout > .sidebar > .sidebar-content {position: sticky; top: 0;}
 
 /* Error messages */

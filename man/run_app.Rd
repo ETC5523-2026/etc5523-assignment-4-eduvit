@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_app.R
 \name{run_app}
 \alias{run_app}
-\title{Launch the Victorian road crash dashboard}
+\title{Launch the Victorian road crash app}
 \usage{
 run_app()
 }
@@ -10,7 +10,7 @@ run_app()
 No return value; called for its side effect of launching the app.
 }
 \description{
-Launch the Victorian road crash dashboard
+Opens the Shiny app included in the package, in the browser or in the RStudio/Positron viewer.
 }
 \examples{
 if (interactive()) run_app()

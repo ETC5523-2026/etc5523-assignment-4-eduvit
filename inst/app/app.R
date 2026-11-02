@@ -21,7 +21,7 @@ measure_choices <- c("Crashes" = "crashes", "Killed or seriously injured (KSI)" 
 scale_choices <- c("Count" = "count", "Per 100k residents" = "per_100k", "Per 1,000 crashes" = "per_1000")
 when_choices <- c("Month" = "month", "Day of the week" = "day_of_week", "Hour of the day" = "hour")
 
-# Labels for plots
+# Labels for charts
 measure_labels <- c(crashes = "Crashes", ksi = "KSI", fatalities = "Deaths")
 scale_labels <- c(count = "", per_100k = " per 100k residents", per_1000 = " per 1,000 crashes")
 measure_words <- c(crashes = "crashes", ksi = "KSI", fatalities = "deaths")
@@ -106,7 +106,7 @@ when_text <- function(when, by){
 
 # Value box number
 box_value <- function(d, measure, scale){
-  if (scale == "per_1000" & (measure == "crashes" | sum(d$crashes) == 0)) return("-") # always 1,000, or no crashes
+  if (scale == "per_1000" && (measure == "crashes" || sum(d$crashes) == 0)) return("-") # always 1,000, or no crashes
   count <- d[[measure]]
   if (scale == "count") value <- sum(count) # total over the years
   if (scale == "per_100k") value <- 1e5 * sum(count) / sum(d$population) # average yearly rate
@@ -213,7 +213,7 @@ ui <- page_navbar(
       sidebar = sidebar(
         selectizeInput(
           "area_lga", "Choose one or more LGAs to analyse (up to 15):",
-          choices = sort(vic_lga$lga_name),
+          choices = setNames(sort(vic_lga$lga_name), tools::toTitleCase(tolower(sort(vic_lga$lga_name)))),
           multiple = TRUE,
           options = list(maxItems = 15, plugins = list("remove_button"))
         ),
@@ -243,7 +243,7 @@ ui <- page_navbar(
         helpText(
           p("Selecting many LGAs or a long period may result in slower loading times"),
           p("Rates per 100k residents are not available in this tab, because population figures are only published yearly"),
-          p("The map and top roads show only the crashes matching the chosen metric (all, KSI or fatal)"),
+          p("The map and top roads show only the crashes matching the chosen metric (crashes, KSI or deaths)"),
           p("Selecting a road user shows the crashes involving them; it does not show how many of them were injured")
         )
       ),
@@ -324,7 +324,7 @@ server <- function(input, output, session){
   vic_check <- reactive(
     validate(need(
       !(input$vic_measure == "crashes" & input$vic_scale == "per_1000"),
-      "Every crash counts as 1,000 per 1,000 crashes: choose KSI or deaths"
+      "Crashes per 1,000 crashes are always 1,000: choose KSI or deaths"
     ))
   )
 
@@ -459,7 +459,7 @@ server <- function(input, output, session){
           ifelse(is.na(value), "no value", format(round(value, 1), big.mark = ","))
         )
       ) |>
-      addLegend(pal = pal, values = ~value, title = vic_label())
+      addLegend(pal = pal, values = ~value, title = vic_label(), na.label = "No value")
   })
 
   # "My area" tab
@@ -509,7 +509,7 @@ server <- function(input, output, session){
   area_check <- reactive(
     validate(need(
       !(input$area_measure == "crashes" & input$area_scale == "per_1000"),
-      "Every crash counts as 1,000 per 1,000 crashes: choose KSI or deaths"
+      "Crashes per 1,000 crashes are always 1,000: choose KSI or deaths"
     ))
   )
 

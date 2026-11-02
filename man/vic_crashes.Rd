@@ -69,7 +69,7 @@ licensed under
 Data last updated 13 October 2026; retrieved 25 October 2026.
 
 \strong{Changes made:} kept casualty crashes up to 31 December 2025; cleaned column names; added \code{year}, \code{month},
-\code{hour}, \code{road_full_name} and the \verb{involves_*} columns; converted categories to factors; set \code{Unk.} and \verb{Not known} to \code{NA}; matched LGA
+\code{hour}, \code{road_full_name} and the \verb{involves_*} columns; converted categories to factors; set \code{Unk.}, \code{Unknown} and \verb{Not known} to \code{NA}; matched LGA
 names to \link{vic_lga}; removed \code{ACCIDENT_TIME}, \code{VICGRID_X}, \code{VICGRID_Y}, \code{ROAD_ROUTE_1}, \code{ROAD_NAME}, \code{ROAD_TYPE},
 \code{DCA_CODE} and \code{SRNS}.
 }
