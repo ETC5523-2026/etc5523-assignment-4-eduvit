@@ -459,7 +459,7 @@ server <- function(input, output, session){
           ifelse(is.na(value), "no value", format(round(value, 1), big.mark = ","))
         )
       ) |>
-      addLegend(pal = pal, values = ~value, title = vic_label(), na.label = "No value")
+      addLegend(pal = pal, values = ~value, title = vic_label(), na.label = "No value", opacity=0.8)
   })
 
   # "My area" tab
@@ -569,7 +569,7 @@ server <- function(input, output, session){
         popupOptions = popupOptions(maxWidth = 500),
         clusterOptions = markerClusterOptions(maxClusterRadius = 40, spiderfyDistanceMultiplier = 2)
       ) |>
-      addLegend(pal = severity_pal, values = ~severity, title = "Severity")
+      addLegend(pal = severity_pal, values = ~severity, title = "Severity", opacity=0.9)
   })
 
   output$area_roads_title <- renderText(

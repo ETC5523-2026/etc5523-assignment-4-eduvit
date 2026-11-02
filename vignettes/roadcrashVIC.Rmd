@@ -35,7 +35,9 @@ library(roadcrashVIC)
 `vic_crashes` has one row for each road crash in Victoria in which at least one person was injured or killed, from 2012 to 2025, as recorded by Victoria Police:
 
 ```{r}
-vic_crashes[1:5, c("accident_date", "lga_name", "severity")]
+vic_crashes |>
+  dplyr::select(accident_date, lga_name, severity) |>
+  head(5)
 ```
 
 Two further datasets support rates and maps: `vic_population`, the resident population of each local government area (LGA) by year, and `vic_lga`, the LGA boundaries. All three come from Victorian Government and Australian Bureau of Statistics sources under the CC BY 4.0 licence. Their help pages (`?vic_crashes`, `?vic_population`, `?vic_lga`) describe every column and the changes made to the original files.
@@ -48,6 +50,7 @@ Two further datasets support rates and maps: `vic_population`, the resident popu
 
 ```{r}
 crashes_2025 <- filter_crashes(vic_crashes, start_date = "2025-01-01", end_date = "2025-12-31")
+range(crashes_2025$accident_date)
 nrow(crashes_2025)
 ```
 
@@ -56,7 +59,7 @@ nrow(crashes_2025)
 `summarise_crashes()` counts crashes and people killed and injured in each group, and the same casualties per 1,000 crashes. KSI stands for people killed or seriously injured.
 
 ```{r}
-summarise_crashes(crashes_2025, by = "day_of_week")[, c("day_of_week", "crashes", "ksi", "ksi_per_1000_crashes")]
+summarise_crashes(crashes_2025, by = "day_of_week")
 ```
 
 The group can be any column of `vic_crashes`, or several columns together, for example `by = c("day_of_week", "hour")`.
@@ -66,7 +69,8 @@ The group can be any column of `vic_crashes`, or several columns together, for e
 Areas with more residents usually have more crashes. `crash_rates()` adds the population and the yearly rates per 100,000 residents, which make years or LGAs of different sizes comparable:
 
 ```{r}
-crash_rates(vic_crashes, vic_population, by = "year")[, c("year", "crashes", "population", "crashes_per_100k")]
+crash_rates(vic_crashes, vic_population, by = "year") |>
+  dplyr::select(year, crashes, population, crashes_per_100k)
 ```
 
 With `by = "lga_name"`, the rate of each LGA is averaged over the years of the data.
@@ -76,7 +80,8 @@ With `by = "lga_name"`, the rate of each LGA is averaged over the years of the d
 `summarise_vulnerable()` applies `summarise_crashes()` to all crashes and to the crashes involving a pedestrian, a cyclist or a motorcyclist:
 
 ```{r}
-summarise_vulnerable(vic_crashes)[, c("road_user", "crashes", "ksi_per_1000_crashes")]
+summarise_vulnerable(vic_crashes) |>
+  dplyr::select(road_user, crashes, ksi_per_1000_crashes)
 ```
 
 Note: a crash involving more than one of these road users appears in more than one row.
@@ -99,7 +104,7 @@ run_app()
 - **Compare with population growth:** an option of the trend chart, which sets the first year to 100 for both the metric and the population.
 - **When do crashes happen most?:** a menu above the chart to show months, days of the week or hours of the day.
 
-![Victoria tab: controls and trend](app-victoria.png)
+![The Victoria tab: sidebar controls, value boxes and the trend chart](app-victoria.png)
 
 ### My area
 
@@ -108,7 +113,7 @@ run_app()
 - **Choose a metric to analyse** and **Show results as:** as in the Victoria tab, without rates per resident, as population figures are only published yearly.
 - **Show crashes involving:** all crashes, or only those involving pedestrians, cyclists or motorcyclists.
 
-![My area tab: map and roads](app-my-area.png)
+![The My area tab: crash locations and the roads with the most crashes in the selected LGAs](app-my-area.png)
 
 ## Selections that are not allowed
 
