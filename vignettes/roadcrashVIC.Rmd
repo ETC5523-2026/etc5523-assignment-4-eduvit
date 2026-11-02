@@ -99,12 +99,16 @@ run_app()
 - **Compare with population growth:** an option of the trend chart, which sets the first year to 100 for both the metric and the population.
 - **When do crashes happen most?:** a menu above the chart to show months, days of the week or hours of the day.
 
+![Victoria tab: controls and trend](app-victoria.png)
+
 ### My area
 
 - **Choose one or more LGAs to analyse:** up to 15 LGAs; **Clear LGAs** removes them all.
 - **Choose a period to analyse:** a range of months; clicking the same month twice selects that month only.
 - **Choose a metric to analyse** and **Show results as:** as in the Victoria tab, without rates per resident, as population figures are only published yearly.
 - **Show crashes involving:** all crashes, or only those involving pedestrians, cyclists or motorcyclists.
+
+![My area tab: map and roads](app-my-area.png)
 
 ## Selections that are not allowed
 
